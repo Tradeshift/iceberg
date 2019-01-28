@@ -39,19 +39,21 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Download dependencies') {
+            steps {
+                sh 'mvn -B dependency:go-offline'
+            }
+        }
         stage('Compile') {
             steps {
-                sh 'mvn compile'
+                sh 'mvn -B compile'
             }
         }
-
-        // Keeping the different phases separate will give you per-phase statistics and a nicer overall structure
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn -B test'
             }
         }
-
         // stage('Docker') {
         //     steps {
         //         // TODO: Build image somehow
