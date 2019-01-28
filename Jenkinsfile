@@ -15,16 +15,16 @@ pipeline {
     }
 
     // For Java people
-    // tools {
-    //    jdk 'oracle-java10.0.1-jdk'
-    //    maven 'apache-maven-3.5.0'
-    // }
-    // environment {
-    //     P12_PASSWORD = credentials 'client-cert-password'
-    //     MAVEN_OPTS = "-Djavax.net.ssl.keyStore=/var/lib/jenkins/.m2/certs/jenkins.p12 \
-    //                   -Djavax.net.ssl.keyStoreType=pkcs12 \
-    //                   -Djavax.net.ssl.keyStorePassword=$P12_PASSWORD"
-    // }
+    tools {
+        jdk 'oracle-java10.0.1-jdk'
+        maven 'apache-maven-3.5.0'
+    }
+    environment {
+        P12_PASSWORD = credentials 'client-cert-password'
+        MAVEN_OPTS = "-Djavax.net.ssl.keyStore=/var/lib/jenkins/.m2/certs/jenkins.p12 \
+                       -Djavax.net.ssl.keyStoreType=pkcs12 \
+                       -Djavax.net.ssl.keyStorePassword=$P12_PASSWORD"
+    }
 
     stages {
         stage('Initialise PR') {
@@ -39,19 +39,18 @@ pipeline {
                 checkout scm
             }
         }
-        // stage('Compile') {
-        //    steps {
-        //        // Whatever it takes to compile your code
-        //        // sh 'mvn compile'
-        //    }
-        // }
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
 
         // Keeping the different phases separate will give you per-phase statistics and a nicer overall structure
-        // stage('Test') {
-        //     steps {
-        //         sh 'mvn test'
-        //     }
-        // }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
 
         // stage('Docker') {
         //     steps {
@@ -60,7 +59,7 @@ pipeline {
         //     }
         // }
 
-        stage('Sonarqube') {
+        /*stage('Sonarqube') {
             // If you use Typescript
             // sh 'npm install typescript'
             when {
@@ -72,7 +71,7 @@ pipeline {
             steps {
                 sonarqube()
             }
-        }
+        }*/
     }
 }
 
