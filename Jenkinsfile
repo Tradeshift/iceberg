@@ -13,7 +13,6 @@ pipeline {
     triggers {
         issueCommentTrigger('^retest$')
     }
-
     // For Java people
     tools {
         jdk 'oracle-java10.0.1-jdk'
@@ -25,7 +24,6 @@ pipeline {
                        -Djavax.net.ssl.keyStoreType=pkcs12 \
                        -Djavax.net.ssl.keyStorePassword=$P12_PASSWORD"
     }
-
     stages {
         stage('Initialise PR') {
             when { changeRequest() }
@@ -60,8 +58,7 @@ pipeline {
         //         dockerPush()
         //     }
         // }
-
-        /*stage('Sonarqube') {
+        stage('Sonarqube') {
             // If you use Typescript
             // sh 'npm install typescript'
             when {
@@ -73,7 +70,7 @@ pipeline {
             steps {
                 sonarqube()
             }
-        }*/
+        }
     }
 }
 
