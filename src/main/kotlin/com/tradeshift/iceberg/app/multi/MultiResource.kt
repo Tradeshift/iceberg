@@ -1,10 +1,7 @@
 package com.tradeshift.iceberg.app.multi
 
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
-import com.tradeshift.iceberg.app.multi.dto.MultiStatsResponse
 import io.dropwizard.jersey.jsr310.LocalDateParam
-import java.time.LocalDate
-import java.util.*
 import javax.validation.constraints.NotNull
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
@@ -20,28 +17,28 @@ class MultiResource(
 ) {
 
     @POST
-    @Path("/{id}/data")
+    @Path("/{username}/{id}/data")
     fun postData(
-        @NotNull @HeaderParam("X-Tradeshift-TenantId") tenantId: UUID,
+        @NotNull @PathParam("username") username: String,
         @NotNull @PathParam("id") modelId: String,
         data: List<MultiDatum>
     ) {
-        val model = service.getModel(tenantId, modelId)
+        val model = service.getModel(username, modelId)
         if (model == null) {
-            service.addModel(tenantId, modelId)
+            service.addModel(username, modelId)
         }
-        service.addData(tenantId, modelId, data)
+        service.addData(username, modelId, data)
     }
 
     @GET
-    @Path("/{id}/stats")
+    @Path("/{username}/{id}/stats")
     fun getStats(
-        @NotNull @HeaderParam("X-Tradeshift-TenantId") tenantId: UUID,
+        @NotNull @PathParam("username") username: String,
         @NotNull @PathParam("id") modelId: String,
         @QueryParam("from") from: LocalDateParam,
         @QueryParam("to") to: LocalDateParam
     ): Response {
-        val stats = service.getStats(tenantId, modelId, from.get(), to.get()) ?: return Response.status(NOT_FOUND).build()
+        val stats = service.getStats(username, modelId, from.get(), to.get()) ?: return Response.status(NOT_FOUND).build()
         return Response.ok(stats).build()
     }
 }

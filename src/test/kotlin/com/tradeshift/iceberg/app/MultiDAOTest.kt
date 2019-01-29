@@ -25,24 +25,24 @@ class MultiDAOTest {
     @Test
     fun test_add_and_get_model() {
         val dao = MultiDAO(Jdbi.create(db.testDatabase))
-        val tenantId = UUID.randomUUID()
+        val username = "baz"
         val modelId = "foo"
-        assertNull(dao.getModel(tenantId, modelId))
+        assertNull(dao.getModel(username, modelId))
 
-        dao.addModel(tenantId, modelId)
+        dao.addModel(username, modelId)
 
-        val expected = MultiModel(tenantId, modelId, 0.0f, 5.0f, 1.0f, 0.0f)
-        val actual = dao.getModel(tenantId, modelId)
+        val expected = MultiModel(username, modelId, 0.0f, 5.0f, 1.0f, 0.0f)
+        val actual = dao.getModel(username, modelId)
         assertEquals(expected, actual)
     }
 
     @Test
     fun test_add_and_get_data() {
         val dao = MultiDAO(Jdbi.create(db.testDatabase))
-        val tenantId = UUID.randomUUID()
+        val username = "baz"
         val modelId = "foo"
 
-        val actual = dao.getData(tenantId, modelId, Timestamp(0), Timestamp.from(Instant.now()))
+        val actual = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
         assertTrue("Expected no data", actual.isEmpty())
 
         val d1 = MultiDatum(
@@ -57,19 +57,19 @@ class MultiDAOTest {
         )
         val data = listOf(d1, d2)
         try {
-            dao.addData(tenantId, modelId, data)
+            dao.addData(username, modelId, data)
             fail("Expected UnableToExecuteStatementException since no model exists, so violating foreign key")
         } catch (e: UnableToExecuteStatementException) {
         }
 
-        dao.addModel(tenantId, modelId)
-        dao.addData(tenantId, modelId, data)
+        dao.addModel(username, modelId)
+        dao.addData(username, modelId, data)
 
-        val a2 = dao.getData(tenantId, modelId, Timestamp(0), Timestamp.from(Instant.now()))
+        val a2 = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
         assertEquals(data, a2)
 
         val a3 = dao.getData(
-            tenantId,
+            username,
             modelId,
             Timestamp.from(d1.ts.toInstant().plusSeconds(5)),
             Timestamp.from(Instant.now())
@@ -77,7 +77,7 @@ class MultiDAOTest {
         assertEquals(listOf(d2), a3)
 
         val a4 = dao.getData(
-            tenantId,
+            username,
             modelId,
             Timestamp(0),
             Timestamp.from(d2.ts.toInstant().minusSeconds(5))

@@ -16,14 +16,14 @@ class MultiDAO(
 
     private val om = ObjectMapper()
 
-    fun getModel(tenantId: UUID, modelId: String): MultiModel? {
+    fun getModel(username: String, modelId: String): MultiModel? {
         return jdbi.withHandleUnchecked {
-            it.createQuery("SELECT * from multi where tenant = :tenantId and id = :modelId")
-                .bind("tenantId", tenantId)
+            it.createQuery("SELECT * from multi where username = :username and id = :modelId")
+                .bind("username", username)
                 .bind("modelId", modelId)
                 .map { rs, ctx ->
                     MultiModel(
-                        UUID.fromString(rs.getString("tenant")),
+                        rs.getString("username"),
                         rs.getString("id"),
                         rs.getFloat("threshold"),
                         rs.getFloat("error_cost"),
@@ -36,21 +36,21 @@ class MultiDAO(
         }
     }
 
-    fun addModel(tenantId: UUID, modelId: String) {
+    fun addModel(username: String, modelId: String) {
         jdbi.useHandleUnchecked {
-            it.createUpdate("INSERT into multi (tenant, id) values (:tenantId, :modelId)")
-                .bind("tenantId", tenantId)
+            it.createUpdate("INSERT into multi (username, id) values (:username, :modelId)")
+                .bind("username", username)
                 .bind("modelId", modelId)
                 .execute()
         }
     }
 
-    fun addData(tenantId: UUID, modelId: String, data: List<MultiDatum>) {
+    fun addData(username: String, modelId: String, data: List<MultiDatum>) {
         jdbi.useHandleUnchecked {
             val b =
-                it.prepareBatch("INSERT into multi_data (multi_tenant, multi_id, ts, correct, predictions) values (:tenantId, :modelId, :ts, :correct, :predictions)")
+                it.prepareBatch("INSERT into multi_data (multi_username, multi_id, ts, correct, predictions) values (:username, :modelId, :ts, :correct, :predictions)")
             for (datum in data) {
-                b.bind("tenantId", tenantId)
+                b.bind("username", username)
                     .bind("modelId", modelId)
                     .bind("ts", datum.ts)
                     .bind("correct", datum.correct)
@@ -61,17 +61,17 @@ class MultiDAO(
         }
     }
 
-    fun getData(tenantId: UUID, modelId: String, from: Timestamp, to: Timestamp): List<MultiDatum> {
+    fun getData(username: String, modelId: String, from: Timestamp, to: Timestamp): List<MultiDatum> {
         return jdbi.withHandleUnchecked<List<MultiDatum>> {
             it.createQuery(
                 "SELECT ts, correct, predictions from multi_data where " +
                         "multi_id = :modelId and " +
-                        "multi_tenant = :tenantId and " +
+                        "multi_username = :username and " +
                         "ts between :from and :to " +
                         "order by ts"
             )
                 .bind("modelId", modelId)
-                .bind("tenantId", tenantId)
+                .bind("username", username)
                 .bind("from", from)
                 .bind("to", to)
                 .map { rs, ctx ->

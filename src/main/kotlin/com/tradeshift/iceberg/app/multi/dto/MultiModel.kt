@@ -1,9 +1,7 @@
 package com.tradeshift.iceberg.app.multi.dto
 
-import java.util.*
-
 data class MultiModel(
-    val tenantId: UUID,
+    val username: String,
     val id: String,
     val threshold: Float,
     val errorCost: Float,
