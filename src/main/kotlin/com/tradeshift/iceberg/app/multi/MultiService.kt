@@ -7,27 +7,26 @@ import com.tradeshift.iceberg.app.multi.dto.MultiStatsResponse
 import com.tradeshift.iceberg.core.ConfusionMatrix
 import java.sql.Timestamp
 import java.time.LocalDate
-import java.util.*
 
 class MultiService(
     private val multiDAO: MultiDAO
 ) {
-    fun addData(tenantId: UUID, modelId: String, data: List<MultiDatum>) {
-        multiDAO.addData(tenantId, modelId, data)
+    fun addData(username: String, modelId: String, data: List<MultiDatum>) {
+        multiDAO.addData(username, modelId, data)
     }
 
-    fun getModel(tenantId: UUID, modelId: String): MultiModel? {
-        return multiDAO.getModel(tenantId, modelId)
+    fun getModel(username: String, modelId: String): MultiModel? {
+        return multiDAO.getModel(username, modelId)
     }
 
-    fun addModel(tenantId: UUID, modelId: String) {
-        multiDAO.addModel(tenantId, modelId)
+    fun addModel(username: String, modelId: String) {
+        multiDAO.addModel(username, modelId)
     }
 
-    fun getStats(tenantId: UUID, modelId: String, from: LocalDate, to: LocalDate): MultiStatsResponse? {
-        val model = multiDAO.getModel(tenantId, modelId) ?: return null
+    fun getStats(username: String, modelId: String, from: LocalDate, to: LocalDate): MultiStatsResponse? {
+        val model = multiDAO.getModel(username, modelId) ?: return null
         val data = multiDAO.getData(
-            tenantId,
+            username,
             modelId,
             Timestamp.valueOf(from.atStartOfDay()),
             Timestamp.valueOf(to.atStartOfDay())

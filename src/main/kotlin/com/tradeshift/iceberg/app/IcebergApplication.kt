@@ -5,6 +5,7 @@ import com.tradeshift.iceberg.app.multi.MultiDAO
 import com.tradeshift.iceberg.app.multi.MultiResource
 import com.tradeshift.iceberg.app.multi.MultiService
 import io.dropwizard.Application
+import io.dropwizard.assets.AssetsBundle
 import io.dropwizard.db.DataSourceFactory
 import io.dropwizard.jdbi3.JdbiFactory
 import io.dropwizard.migrations.MigrationsBundle
@@ -30,12 +31,13 @@ class IcebergApplication : Application<IcebergConfiguration>() {
 
             override fun getMigrationsFileName(): String = "migrations.sql"
         })
+        bootstrap.addBundle(AssetsBundle("/app", "/app", "index.html"))
     }
 
     override fun run(config: IcebergConfiguration, environment: Environment) {
         logger.info { environment.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(config) }
         val factory = JdbiFactory()
-        val jdbi = factory.build(environment, config.database, "postgresql")
+        val jdbi = factory.build(environment, config.database, "db")
         jdbi.installPlugin(KotlinPlugin())
 
         val multiDAO = MultiDAO(jdbi)
