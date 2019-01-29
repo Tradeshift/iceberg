@@ -20,7 +20,7 @@ create table multi_data
   ts             timestamp    not null,
   correct        varchar(255) not null,
   predictions    bytea        not null,
-  foreign key (multi_username, multi_id) references multi (username, id)
+  foreign key (multi_username, multi_id) references multi (username, id) ON DELETE CASCADE
 );
 
 create index multi_data_lookup on multi_data (multi_username, multi_id, ts);
