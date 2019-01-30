@@ -42,7 +42,7 @@ class MultiDAOTest {
         val username = "baz"
         val modelId = "foo"
 
-        val actual = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
+        val actual = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()), 1000)
         assertTrue("Expected no data", actual.isEmpty())
 
         val d1 = MultiDatum(
@@ -65,14 +65,15 @@ class MultiDAOTest {
         dao.addModel(username, modelId)
         dao.addData(username, modelId, data)
 
-        val a2 = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
+        val a2 = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()), 1000)
         assertEquals(data, a2)
 
         val a3 = dao.getData(
             username,
             modelId,
             Timestamp.from(d1.ts.toInstant().plusSeconds(5)),
-            Timestamp.from(Instant.now())
+            Timestamp.from(Instant.now()),
+            1000
         )
         assertEquals(listOf(d2), a3)
 
@@ -80,8 +81,18 @@ class MultiDAOTest {
             username,
             modelId,
             Timestamp(0),
-            Timestamp.from(d2.ts.toInstant().minusSeconds(5))
+            Timestamp.from(d2.ts.toInstant().minusSeconds(5)),
+            1000
         )
         assertEquals(listOf(d1), a4)
+
+        val a5 = dao.getData(
+            username,
+            modelId,
+            Timestamp(0),
+            Timestamp.from(d2.ts.toInstant().plusSeconds(5)),
+            1
+        )
+        assertEquals(1, a5.size)
     }
 }
