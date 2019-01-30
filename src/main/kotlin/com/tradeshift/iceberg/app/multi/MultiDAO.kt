@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
 import com.tradeshift.iceberg.app.multi.dto.MultiModel
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.kotlin.useHandleUnchecked
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import java.sql.Timestamp
-import java.util.*
 
 class MultiDAO(
     private val jdbi: Jdbi
@@ -41,6 +41,14 @@ class MultiDAO(
             it.createUpdate("INSERT into multi (username, id) values (:username, :modelId)")
                 .bind("username", username)
                 .bind("modelId", modelId)
+                .execute()
+        }
+    }
+
+    fun addModel(model: MultiModel) {
+        jdbi.useHandleUnchecked {
+            it.createUpdate("INSERT into multi (username, id, threshold, error_cost, abstain_cost, correct_cost) values (:username, :id, :threshold, :errorCost, :abstainCost, :correctCost)")
+                .bindBean(model)
                 .execute()
         }
     }
@@ -84,6 +92,40 @@ class MultiDAO(
                     )
                 }
                 .list()
+        }
+    }
+
+    fun getModels(): List<MultiModel> {
+        return jdbi.withHandleUnchecked {
+            it.createQuery("SELECT * from multi")
+                .mapTo<MultiModel>()
+                .list()
+        }
+    }
+
+    fun getModelsForUser(username: String): List<MultiModel> {
+        return jdbi.withHandleUnchecked {
+            it.createQuery("SELECT * from multi where username = :username")
+                .bind("username", username)
+                .mapTo<MultiModel>()
+                .list()
+        }
+    }
+
+    fun updateModel(model: MultiModel) {
+        jdbi.useHandleUnchecked {
+            it.createUpdate("UPDATE multi set threshold = :threshold, error_cost = :errorCost, abstain_cost = :abstainCost, correct_cost = :correctCost WHERE username = :username AND id = :id")
+                .bindBean(model)
+                .execute()
+        }
+    }
+
+    fun deleteModel(username: String, modelId: String) {
+        jdbi.useHandleUnchecked {
+            it.createUpdate("DELETE from multi WHERE username = :username AND id = :modelId")
+                .bind("username", username)
+                .bind("modelId", modelId)
+                .execute()
         }
     }
 }

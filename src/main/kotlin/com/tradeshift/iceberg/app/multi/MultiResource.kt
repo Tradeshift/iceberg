@@ -1,12 +1,14 @@
 package com.tradeshift.iceberg.app.multi
 
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
+import com.tradeshift.iceberg.app.multi.dto.MultiModel
+import com.tradeshift.iceberg.app.multi.dto.MultiStatsResponse
 import io.dropwizard.jersey.jsr310.LocalDateParam
+import java.util.*
 import javax.validation.constraints.NotNull
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.NOT_FOUND
 
 
 @Path("multi")
@@ -22,23 +24,63 @@ class MultiResource(
         @NotNull @PathParam("username") username: String,
         @NotNull @PathParam("id") modelId: String,
         data: List<MultiDatum>
-    ) {
-        val model = service.getModel(username, modelId)
-        if (model == null) {
-            service.addModel(username, modelId)
-        }
+    ): Response {
         service.addData(username, modelId, data)
+        return Response.ok().build()
+    }
+
+    @PUT
+    @Path("/{username}/{id}")
+    fun putModel(
+        @NotNull @PathParam("username") username: String,
+        @NotNull @PathParam("id") modelId: String,
+        model: MultiModel
+    ): Response {
+        service.putModel(model.copy(username = username, id = modelId))
+        return Response.ok().build()
     }
 
     @GET
-    @Path("/{username}/{id}/stats")
+    @Path("/{username}/{id}/thresholds")
     fun getStats(
         @NotNull @PathParam("username") username: String,
         @NotNull @PathParam("id") modelId: String,
         @QueryParam("from") from: LocalDateParam,
         @QueryParam("to") to: LocalDateParam
+    ): Optional<MultiStatsResponse> {
+        return Optional.ofNullable(service.getStats(username, modelId, from.get(), to.get()))
+    }
+
+    @GET
+    @Path("/")
+    fun getAllModels(): List<MultiModel> {
+        return service.getModels()
+    }
+
+    @GET
+    @Path("/{username}")
+    fun getAllModelsForUser(
+        @NotNull @PathParam("username") username: String
+    ): List<MultiModel> {
+        return service.getModelsForUser(username)
+    }
+
+    @GET
+    @Path("/{username}/{id}")
+    fun getModel(
+        @NotNull @PathParam("username") username: String,
+        @NotNull @PathParam("id") modelId: String
+    ): Optional<MultiModel> {
+        return Optional.ofNullable(service.getModel(username, modelId))
+    }
+
+    @DELETE
+    @Path("/{username}/{id}")
+    fun deleteModel(
+        @NotNull @PathParam("username") username: String,
+        @NotNull @PathParam("id") modelId: String
     ): Response {
-        val stats = service.getStats(username, modelId, from.get(), to.get()) ?: return Response.status(NOT_FOUND).build()
-        return Response.ok(stats).build()
+        service.deleteModel(username, modelId)
+        return Response.ok().build()
     }
 }

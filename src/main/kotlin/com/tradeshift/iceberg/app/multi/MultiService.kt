@@ -12,6 +12,10 @@ class MultiService(
     private val multiDAO: MultiDAO
 ) {
     fun addData(username: String, modelId: String, data: List<MultiDatum>) {
+        val model = getModel(username, modelId)
+        if (model == null) {
+            addModel(username, modelId)
+        }
         multiDAO.addData(username, modelId, data)
     }
 
@@ -43,6 +47,27 @@ class MultiService(
             stats
         }
         return MultiStatsResponse(model, data.size, data.map { it.correct }.toSet().size, stats)
+    }
+
+    fun getModels(): List<MultiModel> {
+        return multiDAO.getModels()
+    }
+
+    fun getModelsForUser(username: String): List<MultiModel> {
+        return multiDAO.getModelsForUser(username)
+    }
+
+    fun putModel(model: MultiModel) {
+        val found = multiDAO.getModel(model.username, model.id)
+        if (found == null) {
+            multiDAO.addModel(model)
+        } else {
+            multiDAO.updateModel(model)
+        }
+    }
+
+    fun deleteModel(username: String, modelId: String) {
+        multiDAO.deleteModel(username, modelId)
     }
 
 }
