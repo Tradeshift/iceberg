@@ -42,7 +42,7 @@ class MultiDAOTest {
         val username = "baz"
         val modelId = "foo"
 
-        val actual = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
+        val actual = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()), 1000)
         assertTrue("Expected no data", actual.isEmpty())
 
         val d1 = MultiDatum(
@@ -65,23 +65,39 @@ class MultiDAOTest {
         dao.addModel(username, modelId)
         dao.addData(username, modelId, data)
 
-        val a2 = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()))
-        assertEquals(data, a2)
+        val a2 = dao.getData(username, modelId, Timestamp(0), Timestamp.from(Instant.now()), 1000)
+        assertEquals(data.toSet(), a2.toSet())
 
         val a3 = dao.getData(
             username,
             modelId,
             Timestamp.from(d1.ts.toInstant().plusSeconds(5)),
-            Timestamp.from(Instant.now())
+            Timestamp.from(Instant.now()),
+            1000
         )
-        assertEquals(listOf(d2), a3)
+        assertEquals(setOf(d2), a3.toSet())
 
         val a4 = dao.getData(
             username,
             modelId,
             Timestamp(0),
-            Timestamp.from(d2.ts.toInstant().minusSeconds(5))
+            Timestamp.from(d2.ts.toInstant().minusSeconds(5)),
+            1000
         )
-        assertEquals(listOf(d1), a4)
+        assertEquals(setOf(d1), a4.toSet())
+
+        val seen = mutableSetOf<MultiDatum>()
+        for (i in 1..100) {
+            val a5 = dao.getData(
+                username,
+                modelId,
+                Timestamp(0),
+                Timestamp.from(d2.ts.toInstant().plusSeconds(5)),
+                1
+            )
+            assertEquals(1, a5.size)
+            seen.add(a5[0])
+        }
+        assertEquals(setOf(d1, d2), seen) //less than <1e-30 probability of failing if random is random.
     }
 }

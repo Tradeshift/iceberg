@@ -27,13 +27,14 @@ class MultiService(
         multiDAO.addModel(username, modelId)
     }
 
-    fun getStats(username: String, modelId: String, from: LocalDate, to: LocalDate): MultiStatsResponse? {
+    fun getStats(username: String, modelId: String, from: LocalDate, to: LocalDate, limit: Int): MultiStatsResponse? {
         val model = multiDAO.getModel(username, modelId) ?: return null
         val data = multiDAO.getData(
             username,
             modelId,
             Timestamp.valueOf(from.atStartOfDay()),
-            Timestamp.valueOf(to.atStartOfDay())
+            Timestamp.valueOf(to.atStartOfDay()),
+            limit
         )
         val stats = if (data.isEmpty()) {
             listOf<MultiStats>()

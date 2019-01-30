@@ -69,19 +69,21 @@ class MultiDAO(
         }
     }
 
-    fun getData(username: String, modelId: String, from: Timestamp, to: Timestamp): List<MultiDatum> {
+    fun getData(username: String, modelId: String, from: Timestamp, to: Timestamp, limit: Int): List<MultiDatum> {
         return jdbi.withHandleUnchecked<List<MultiDatum>> {
             it.createQuery(
                 "SELECT ts, correct, predictions from multi_data where " +
                         "multi_id = :modelId and " +
                         "multi_username = :username and " +
                         "ts between :from and :to " +
-                        "order by ts"
+                        "order by random()" +
+                        "limit :limit"
             )
                 .bind("modelId", modelId)
                 .bind("username", username)
                 .bind("from", from)
                 .bind("to", to)
+                .bind("limit", limit)
                 .map { rs, ctx ->
                     MultiDatum(
                         rs.getTimestamp("ts"),

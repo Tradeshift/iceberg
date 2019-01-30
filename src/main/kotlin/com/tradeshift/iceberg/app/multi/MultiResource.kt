@@ -48,7 +48,7 @@ class MultiResource(
         @QueryParam("from") from: LocalDateParam,
         @QueryParam("to") to: LocalDateParam
     ): Optional<MultiStatsResponse> {
-        return Optional.ofNullable(service.getStats(username, modelId, from.get(), to.get()))
+        return Optional.ofNullable(service.getStats(username, modelId, from.get(), to.get(), 10_000))
     }
 
     @GET
