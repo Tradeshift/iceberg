@@ -106,7 +106,11 @@
             <version>1.4.197</version>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>3.6.1</version>
+        </dependency>
 
         <!-- jax rs -->
         <dependency>
@@ -143,12 +147,6 @@
             <groupId>org.jdbi</groupId>
             <artifactId>jdbi3-testing</artifactId>
             <version>${jdbi.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-pg-embedded</artifactId>
-            <version>0.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

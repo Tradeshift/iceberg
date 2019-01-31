@@ -1,30 +1,36 @@
 package com.tradeshift.iceberg.app
 
-import org.jdbi.v3.core.Jdbi
-import org.junit.Test
-
-import org.junit.Assert.*
-import java.util.*
-import com.opentable.db.postgres.embedded.LiquibasePreparer
-import com.opentable.db.postgres.junit.EmbeddedPostgresRules
 import com.tradeshift.iceberg.app.multi.MultiDAO
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
 import com.tradeshift.iceberg.app.multi.dto.MultiModel
+import liquibase.Liquibase
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
+import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
-import org.junit.Rule
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import java.sql.DriverManager
 import java.sql.Timestamp
 import java.time.Instant
 
 
 class MultiDAOTest {
 
-    @Rule
-    @JvmField
-    val db = EmbeddedPostgresRules.preparedDatabase(LiquibasePreparer.forClasspathLocation("migrations.sql"))
+    var jdbi: Jdbi? = null
+
+    @Before
+    fun setup(){
+        val connection = DriverManager.getConnection("jdbc:h2:mem:")
+        Liquibase("migrations.sql", ClassLoaderResourceAccessor(), JdbcConnection(connection)).update("")
+        jdbi = Jdbi.create(connection)
+    }
+
 
     @Test
     fun test_add_and_get_model() {
-        val dao = MultiDAO(Jdbi.create(db.testDatabase))
+        val dao = MultiDAO(jdbi!!)
         val username = "baz"
         val modelId = "foo"
         assertNull(dao.getModel(username, modelId))
@@ -38,7 +44,7 @@ class MultiDAOTest {
 
     @Test
     fun test_add_and_get_data() {
-        val dao = MultiDAO(Jdbi.create(db.testDatabase))
+        val dao = MultiDAO(jdbi!!)
         val username = "baz"
         val modelId = "foo"
 
