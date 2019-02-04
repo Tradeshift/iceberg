@@ -76,7 +76,7 @@ class MultiDAO(
                         "multi_id = :modelId and " +
                         "multi_username = :username and " +
                         "ts between :from and :to " +
-                        "order by random()" +
+                        "order by random() " +
                         "limit :limit"
             )
                 .bind("modelId", modelId)
