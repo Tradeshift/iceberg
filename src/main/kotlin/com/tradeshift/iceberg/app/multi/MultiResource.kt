@@ -53,16 +53,19 @@ class MultiResource(
 
     @GET
     @Path("/")
-    fun getAllModels(): List<MultiModel> {
-        return service.getModels()
+    fun getAllModels(
+        @QueryParam("page") page: Int
+    ): List<MultiModel> {
+        return service.getModels(page)
     }
 
     @GET
     @Path("/{username}")
     fun getAllModelsForUser(
-        @NotNull @PathParam("username") username: String
+        @NotNull @PathParam("username") username: String,
+        @QueryParam("page") page: Int
     ): List<MultiModel> {
-        return service.getModelsForUser(username)
+        return service.getModelsForUser(username, page)
     }
 
     @GET

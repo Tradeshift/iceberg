@@ -1,30 +1,39 @@
 package com.tradeshift.iceberg.app
 
-import org.jdbi.v3.core.Jdbi
-import org.junit.Test
-
-import org.junit.Assert.*
-import java.util.*
-import com.opentable.db.postgres.embedded.LiquibasePreparer
-import com.opentable.db.postgres.junit.EmbeddedPostgresRules
 import com.tradeshift.iceberg.app.multi.MultiDAO
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
 import com.tradeshift.iceberg.app.multi.dto.MultiModel
+import liquibase.Liquibase
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
+import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
-import org.junit.Rule
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import java.lang.Math.random
+import java.sql.DriverManager
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.*
 
 
 class MultiDAOTest {
 
-    @Rule
-    @JvmField
-    val db = EmbeddedPostgresRules.preparedDatabase(LiquibasePreparer.forClasspathLocation("migrations.sql"))
+    var jdbi: Jdbi? = null
+
+    @Before
+    fun setup() {
+        val connection = DriverManager.getConnection("jdbc:h2:mem:")
+        Liquibase("migrations.sql", ClassLoaderResourceAccessor(), JdbcConnection(connection)).update("")
+        jdbi = Jdbi.create(connection).installPlugin(KotlinPlugin())
+    }
+
 
     @Test
     fun test_add_and_get_model() {
-        val dao = MultiDAO(Jdbi.create(db.testDatabase))
+        val dao = MultiDAO(jdbi!!)
         val username = "baz"
         val modelId = "foo"
         assertNull(dao.getModel(username, modelId))
@@ -38,7 +47,7 @@ class MultiDAOTest {
 
     @Test
     fun test_add_and_get_data() {
-        val dao = MultiDAO(Jdbi.create(db.testDatabase))
+        val dao = MultiDAO(jdbi!!)
         val username = "baz"
         val modelId = "foo"
 
@@ -99,5 +108,65 @@ class MultiDAOTest {
             seen.add(a5[0])
         }
         assertEquals(setOf(d1, d2), seen) //less than <1e-30 probability of failing if random is random.
+    }
+
+    @Test
+    fun test_get_all_models() {
+        val dao = MultiDAO(jdbi!!)
+        val models = (0..149).map {
+            MultiModel(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                0.0f,
+                0.0f,
+                0.0f,
+                0.0f
+            )
+        }
+        models.forEach { dao.addModel(it) }
+        val sorted = models.sortedBy { it.username + it.id }
+        assertEquals(sorted.subList(0, 100), dao.getModels(0))
+        assertEquals(sorted.subList(100, 150), dao.getModels(1))
+        assertTrue(dao.getModels(2).isEmpty())
+    }
+
+    @Test
+    fun update_model() {
+        val dao = MultiDAO(jdbi!!)
+        fun rf() = random().toFloat()
+        dao.addModel("foo", "bar")
+        val expected = MultiModel("foo", "bar", rf(), rf(), rf(), rf())
+        dao.updateModel(expected)
+        assertEquals(expected, dao.getModel("foo", "bar"))
+    }
+
+
+    @Test
+    fun test_get_user_models() {
+        val dao = MultiDAO(jdbi!!)
+        val models = (0..149).map {
+            MultiModel(
+                "foo",
+                UUID.randomUUID().toString(),
+                0.0f,
+                0.0f,
+                0.0f,
+                0.0f
+            )
+        }
+        models.forEach { dao.addModel(it) }
+        val sorted = models.sortedBy { it.username + it.id }
+        assertEquals(sorted.subList(0, 100), dao.getModelsForUser("foo", 0))
+        assertEquals(sorted.subList(100, 150), dao.getModelsForUser("foo", 1))
+        assertTrue(dao.getModelsForUser("foo", 2).isEmpty())
+    }
+
+    @Test
+    fun delete_model() {
+        val dao = MultiDAO(jdbi!!)
+        dao.addModel("foo", "bar")
+        assertNotNull(dao.getModel("foo", "bar"))
+        dao.deleteModel("foo", "bar")
+        assertNull(dao.getModel("foo", "bar"))
     }
 }

@@ -50,12 +50,12 @@ class MultiService(
         return MultiStatsResponse(model, data.size, data.map { it.correct }.toSet().size, stats)
     }
 
-    fun getModels(): List<MultiModel> {
-        return multiDAO.getModels()
+    fun getModels(page: Int): List<MultiModel> {
+        return multiDAO.getModels(page)
     }
 
-    fun getModelsForUser(username: String): List<MultiModel> {
-        return multiDAO.getModelsForUser(username)
+    fun getModelsForUser(username: String, page: Int): List<MultiModel> {
+        return multiDAO.getModelsForUser(username, page)
     }
 
     fun putModel(model: MultiModel) {

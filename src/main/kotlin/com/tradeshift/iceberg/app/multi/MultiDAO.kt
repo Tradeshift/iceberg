@@ -13,8 +13,8 @@ import java.sql.Timestamp
 class MultiDAO(
     private val jdbi: Jdbi
 ) {
-
     private val om = ObjectMapper()
+    private val pageSize = 100
 
     fun getModel(username: String, modelId: String): MultiModel? {
         return jdbi.withHandleUnchecked {
@@ -76,7 +76,7 @@ class MultiDAO(
                         "multi_id = :modelId and " +
                         "multi_username = :username and " +
                         "ts between :from and :to " +
-                        "order by random()" +
+                        "order by random() " +
                         "limit :limit"
             )
                 .bind("modelId", modelId)
@@ -97,17 +97,21 @@ class MultiDAO(
         }
     }
 
-    fun getModels(): List<MultiModel> {
+    fun getModels(page: Int): List<MultiModel> {
         return jdbi.withHandleUnchecked {
-            it.createQuery("SELECT * from multi")
+            it.createQuery("SELECT * from multi order by username, id limit :pageSize offset :offset")
+                .bind("pageSize", pageSize)
+                .bind("offset", page * pageSize)
                 .mapTo<MultiModel>()
                 .list()
         }
     }
 
-    fun getModelsForUser(username: String): List<MultiModel> {
+    fun getModelsForUser(username: String, page: Int): List<MultiModel> {
         return jdbi.withHandleUnchecked {
-            it.createQuery("SELECT * from multi where username = :username")
+            it.createQuery("SELECT * from multi where username = :username order by id limit :pageSize offset :offset")
+                .bind("pageSize", pageSize)
+                .bind("offset", page * pageSize)
                 .bind("username", username)
                 .mapTo<MultiModel>()
                 .list()
