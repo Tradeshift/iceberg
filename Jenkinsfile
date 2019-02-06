@@ -37,6 +37,17 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Sonarqube') {
+            when {
+                anyOf {
+                    branch 'master' // Only run Sonarqube on master...
+                    changeRequest() // ... and PRs
+                }
+            }
+            steps {
+                sonarqube()
+            }
+        }
         stage('Download dependencies') {
             steps {
                 sh 'mvn -B dependency:go-offline'
@@ -52,25 +63,23 @@ pipeline {
                 sh 'mvn -B test'
             }
         }
-        // stage('Docker') {
-        //     steps {
-        //         // TODO: Build image somehow
-        //         dockerPush()
-        //     }
-        // }
-        stage('Sonarqube') {
-            // If you use Typescript
-            // sh 'npm install typescript'
+        stage('Docker') {
             when {
                 anyOf {
-                    branch 'master' // Only run Sonarqube on master...
+                    branch 'master' // Only build docker images on master
                     changeRequest() // ... and PRs
                 }
             }
             steps {
-                sonarqube()
+                script {
+                    def name = "docker.tradeshift.net/iceberg:${env.GIT_COMMIT}"
+                    def image = docker.build(name)
+                    image.push()
+                    pullRequest.comment("pushed `$name`")
+                }
             }
         }
+
     }
 }
 
