@@ -75,6 +75,11 @@ pipeline {
                     def name = "docker.tradeshift.net/iceberg:${env.GIT_COMMIT}"
                     def image = docker.build(name)
                     image.push()
+                }
+            }
+            when {changeRequest() }
+            steps {
+                script {
                     pullRequest.comment("pushed `$name`")
                 }
             }
