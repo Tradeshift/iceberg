@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600');
+
+:root {
+  --green: #8EDA65;
+  --red: #D55D5D;
+  --blue: #00B0FF;
+  --white: #FFFFFF;
+  --bg-color: #E5EBEE;
+  --text-color: #192226;
+  --border-color: #CCD8DD;
+  --shadow-color: rgba(88, 124, 141, 0.1);
+  --radius: 3px;
+  --gap-sm: 10px;
+  --gap: 20px;
+  --gap-lg: 60px;
+  --font-family: 'Open Sans';
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+}
