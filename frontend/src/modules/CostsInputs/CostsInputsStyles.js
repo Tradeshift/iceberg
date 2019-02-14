@@ -6,12 +6,12 @@ const CostsInputsStyles = styled.div`
     h5 {
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 12px;
+        font-size: var(--font-xs);
     }
 
     p {
         font-weight: normal;
-        font-size: 14px;
+        font-size: var(--font-md);
     }
 
     button {
@@ -23,7 +23,7 @@ const CostsInputsStyles = styled.div`
         span {
             display: block;
             font-weight: 600;
-            font-size: 12px;
+            font-size: var(--font-xs);
             margin-top: var(--gap);
             margin-bottom: calc(var(--gap-sm) /2);
         }
@@ -36,7 +36,7 @@ const CostsInputsStyles = styled.div`
         display: block;
         margin: var(--gap) 0;
         font-style: italic;
-        font-size: 15px;
+        font-size: var(--font-md);
     }
 `;
 

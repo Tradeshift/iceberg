@@ -4,7 +4,7 @@ import { Scatter } from 'react-chartjs-2';
 
 
 const Chart = ({ data, options }) => (
-    <div style={{ height: '390px' }}>
+    <div style={{ height: '360px' }}>
         <Scatter data={data} options={options} />
     </div>
 );

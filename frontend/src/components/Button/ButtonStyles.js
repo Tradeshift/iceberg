@@ -14,7 +14,10 @@ const ButtonStyles = styled.button`
     width: 340px;
     cursor: pointer;
     &:hover {
-        background-color: '#20a0e9';
+        background-color: #0084cc;
+    }
+    &:focus {
+        outline: none;
     }
 `;
 

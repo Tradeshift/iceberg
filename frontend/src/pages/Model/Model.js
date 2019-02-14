@@ -1,14 +1,23 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import 'chartjs-plugin-annotation';
 import 'chartjs-plugin-draggable';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
-import TopBar from 'modules/TopBar/TopBar';
+import FeedbackModal from 'components/FeedbackModal/FeedbackModal';
+import TopBar from 'components/TopBar/TopBar';
 import Stats from 'modules/Stats/Stats';
-import { getValuePair, startDate, endDate } from 'utils/helpers';
-import CostsInputs from '../../modules/CostsInputs/CostsInputs';
-import Charts from '../../modules/Charts/Charts';
-import SingleModelStyles from './SingleModelStyles';
+import CostsInputs from 'modules/CostsInputs/CostsInputs';
+import StatsChart from 'modules/StatsChart/StatsChart';
+import CostChart from 'modules/CostChart/CostChart';
+import {
+    getValuePair,
+    formatFloat,
+    startDate,
+    endDate,
+} from 'utils/helpers';
+import SingleModelStyles from './ModelStyles';
+
 
 class Model extends Component {
     constructor() {
@@ -28,6 +37,8 @@ class Model extends Component {
             }],
             start: startDate,
             end: endDate,
+            showSuccessModal: false,
+            showErrorModal: false,
         };
 
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -38,28 +49,19 @@ class Model extends Component {
         const { match } = this.props;
         const { start, end } = this.state;
 
-        fetch(
-            `/multi/${match.params.username}/${match.params.modelId}/thresholds?from=${start}&to=${end}`, {
-                accept: 'application/json',
-            },
-        )
-            .then(results => results.json())
-            .then((data) => {
-                this.setState({
-                    errorCost: data.model.errorCost,
-                    abstainCost: data.model.abstainCost,
-                    correctCost: data.model.correctCost,
-                    threshold: data.model.threshold,
-                    outcomes: data.outcomes,
-                    samples: data.samples,
-                    stats: data.stats,
-                });
-            });
+        this.fetchModelData(match, start, end);
     }
 
     handleOnChange = e => this.setState({
         [e.target.name]: e.target.value,
     });
+
+    handleChangeDate = () => {
+        const { match } = this.props;
+        const { start, end } = this.state;
+
+        this.fetchModelData(match, start, end);
+    }
 
     handleOnDrag = e => this.setState({
         threshold: e.subject.config.value,
@@ -88,7 +90,43 @@ class Model extends Component {
                 }),
             },
         )
-            .then(results => console.log('results', results));
+            .then((res) => {
+                if (res.ok) {
+                    this.setState({
+                        showSuccessModal: true,
+                    });
+                } else {
+                    this.setState({
+                        showErrorModal: true,
+                    });
+                }
+            });
+    }
+
+    handleModalClose = () => this.setState({
+        showSuccessModal: false,
+        showErrorModal: false,
+    });
+
+    fetchModelData = (match, start, end) => {
+        fetch(
+            `/multi/${match.params.username}/${match.params.modelId}/thresholds?from=${start}&to=${end}`, {
+                accept: 'application/json',
+            },
+        )
+            .then(results => results.json())
+            .then((data) => {
+                this.setState({
+                    errorCost: data.model.errorCost,
+                    abstainCost: data.model.abstainCost,
+                    correctCost: data.model.correctCost,
+                    threshold: data.model.threshold,
+                    outcomes: data.outcomes,
+                    samples: data.samples,
+                    stats: data.stats,
+                });
+            })
+            .catch(err => console.log(err));
     }
 
     render() {
@@ -103,6 +141,8 @@ class Model extends Component {
             stats,
             start,
             end,
+            showSuccessModal,
+            showErrorModal,
         } = this.state;
 
         const errors = map(stats, stat => ({
@@ -119,9 +159,9 @@ class Model extends Component {
         }));
         const costPoints = map(stats, stat => ({
             x: stat.threshold,
-            y: errorCost * stat.error
+            y: formatFloat(errorCost * stat.error
             + abstainCost * stat.abstain
-            + correctCost * stat.correct,
+            + correctCost * stat.correct),
         }));
 
         const averageCost = getValuePair(costPoints, threshold);
@@ -134,6 +174,7 @@ class Model extends Component {
                 <TopBar
                     modelId={match.params.modelId}
                     handleOnChange={this.handleOnChange}
+                    handleChangeDate={this.handleChangeDate}
                     start={start}
                     end={end}
                 />
@@ -154,13 +195,22 @@ class Model extends Component {
                         handleOnChange={this.handleOnChange}
                         handleOnClick={this.handleOnSave}
                     />
-                    <Charts
+                    <StatsChart
                         threshold={threshold}
                         errors={errors}
                         abstains={abstains}
                         corrects={corrects}
+                        handleOnDrag={this.handleOnDrag}
+                    />
+                    <CostChart
+                        threshold={threshold}
                         costPoints={costPoints}
                         handleOnDrag={this.handleOnDrag}
+                    />
+                    <FeedbackModal
+                        showSuccessModal={showSuccessModal}
+                        showErrorModal={showErrorModal}
+                        handleModalClose={this.handleModalClose}
                     />
                 </SingleModelStyles>
             </>

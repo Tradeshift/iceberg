@@ -23,7 +23,7 @@ const StatsStyles = styled.div`
             margin: 0;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: var(--font-xs);
         }
     }
 `;

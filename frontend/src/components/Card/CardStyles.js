@@ -6,10 +6,11 @@ const CardStyles = styled.div`
     border-radius: var(--radius);
     box-shadow: 0 5px 10px 0 var(--shadow-color);
     padding: var(--gap);
+    height: 100%;
 
     h5 {
         font-weight: 600;
-        font-size: 17px;
+        font-size: var(--font-lg);
     }
 `;
 

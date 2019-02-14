@@ -4,6 +4,8 @@ const TopBarStyles = styled.div`
     grid-area: topbar;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    height: 80px;
     background-color: var(--white);
     padding: var(--gap) var(--gap-lg);
     margin-bottom: var(--gap);
@@ -11,15 +13,14 @@ const TopBarStyles = styled.div`
 
     h1 {
         font-weight: 600;
-        font-size: 20px;
-        text-transform: capitalize;
+        font-size: var(--font-xl);
         margin: 0;
     }
 
     .timePicker {
         span {
             font-weight: 600;
-            font-size: 12px;
+            font-size: var(--font-xs);
             text-transform: uppercase;
             margin: 0 var(--gap-sm);
 
@@ -31,6 +32,11 @@ const TopBarStyles = styled.div`
         input {
             display: inline;
             max-width: 160px;
+        }
+
+        button {
+            width: auto;
+            margin-left: var(--gap);
         }
     }
 `;

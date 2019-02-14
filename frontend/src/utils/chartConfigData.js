@@ -1,3 +1,6 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable func-names */
+
 import { formatFloat } from './helpers';
 
 export const getChartData = (errors, abstains, corrects) => ({
@@ -33,7 +36,7 @@ export const getChartOptions = (threshold, handleOnDrag) => ({
     maintainAspectRatio: false,
     annotation: {
         drawTime: 'afterDraw',
-        events: ['click'],
+        events: ['click', 'mouseover', 'mouseout'],
         annotations: [{
             type: 'line',
             mode: 'vertical',
@@ -46,9 +49,22 @@ export const getChartOptions = (threshold, handleOnDrag) => ({
                 content: `Threshold: ${formatFloat(threshold)}`,
                 fontFamily: 'Open Sans',
                 fontSize: 13,
+                cursor: 'col-resize',
             },
             draggable: true,
             onDrag: e => handleOnDrag(e),
+            onMouseover: function () {
+                const element = this;
+                element.options.borderWidth = 3;
+                element.chartInstance.update();
+                element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+            },
+            onMouseout: function () {
+                const element = this;
+                element.options.borderWidth = 1;
+                element.chartInstance.update();
+                element.chartInstance.chart.canvas.style.cursor = 'initial';
+            },
         }],
     },
     title: {
@@ -108,8 +124,8 @@ export const getLineData = costPoints => ({
         pointRadius: 0,
         showLine: true,
         label: 'Cost',
-        backgroundColor: '#00B0FF',
-        borderColor: '#00B0FF',
+        backgroundColor: '#FFB65C',
+        borderColor: '#FFB65C',
         data: costPoints,
         fill: false,
     }],
@@ -120,7 +136,7 @@ export const getLineOptions = (threshold, handleOnDrag) => ({
     maintainAspectRatio: false,
     annotation: {
         drawTime: 'afterDraw',
-        events: ['click'],
+        events: ['click', 'mouseover', 'mouseout'],
         annotations: [{
             type: 'line',
             mode: 'vertical',
@@ -136,6 +152,18 @@ export const getLineOptions = (threshold, handleOnDrag) => ({
             },
             draggable: true,
             onDrag: e => handleOnDrag(e),
+            onMouseover: function () {
+                const element = this;
+                element.options.borderWidth = 3;
+                element.chartInstance.update();
+                element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+            },
+            onMouseout: function () {
+                const element = this;
+                element.options.borderWidth = 1;
+                element.chartInstance.update();
+                element.chartInstance.chart.canvas.style.cursor = 'initial';
+            },
         }],
     },
     title: {

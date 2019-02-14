@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { formatFloat } from 'utils/helpers';
 import Card from 'components/Card/Card';
 import Button from 'components/Button/Button';
+import Input from 'components/Input/Input';
 import CostsInputsStyles from './CostsInputsStyles';
 
 const CostsInputs = (props) => {
     const {
-        threshold,
         errorCost,
         abstainCost,
         correctCost,
@@ -27,32 +26,31 @@ const CostsInputs = (props) => {
                     Specify the average cost of the different outcomes and
                     select the threshold that minimizes the average cost.
                 </p>
-                <h5>{`Threshold: ${formatFloat(threshold)}`}</h5>
                 <div className="inputWrapper">
                     <span>Cost of making an error</span>
-                    <input
+                    <Input
                         type="number"
                         name="errorCost"
                         value={errorCost}
-                        onChange={handleOnChange}
+                        handleOnChange={handleOnChange}
                     />
                 </div>
                 <div className="inputWrapper">
                     <span>Cost of abstaining</span>
-                    <input
+                    <Input
                         type="number"
                         name="abstainCost"
                         value={abstainCost}
-                        onChange={handleOnChange}
+                        handleOnChange={handleOnChange}
                     />
                 </div>
                 <div className="inputWrapper">
                     <span>Cost of making a correct classification</span>
-                    <input
+                    <Input
                         type="number"
                         name="correctCost"
                         value={correctCost}
-                        onChange={handleOnChange}
+                        handleOnChange={handleOnChange}
                     />
                 </div>
                 <span className="info">
@@ -67,7 +65,6 @@ const CostsInputs = (props) => {
 };
 
 CostsInputs.propTypes = {
-    threshold: PropTypes.number.isRequired,
     errorCost: PropTypes.number.isRequired,
     abstainCost: PropTypes.number.isRequired,
     correctCost: PropTypes.number.isRequired,

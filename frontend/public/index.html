@@ -14,6 +14,15 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600" rel="stylesheet">
     <link
+      rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/react-table@latest/react-table.css"
+    />
+    <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
@@ -42,23 +51,6 @@
           document.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"><\/script>\n')
           document.write('<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"><\/script>\n') 
       }
-    </script>
-   
-    <script>
-    if (datefield.type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
-        jQuery(function($){ //on document.ready
-            $('.datepicker').each(function() {
-                $(this).datepicker({
-                  dateFormat : 'yy-mm-dd',
-                  defaultDate: $(this).val(),
-                  onSelect: function(formattedDate, date, inst) {
-                      $(inst.el).value(date);
-                      $(inst.el).triggerHandler('change');
-                  }
-                });
-            })
-        })
-    }
     </script>
   </body>
 </html>

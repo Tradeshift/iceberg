@@ -7,11 +7,11 @@ export const getValuePair = (arr, value) => {
     return key ? arr[parseInt(key, 10)].y : 0;
 };
 
-// const d = new Date();
-// const m = d.getMonth();
-// const y = d.getFullYear();
-const m = 0;
-const y = 2019;
+const d = new Date();
+const m = d.getMonth();
+const y = d.getFullYear();
+// const m = 0;
+// const y = 2019;
 const lastDay = new Date(y, m + 1, 0).getDate();
 
 export const startDate = `${y}-${m < 10 ? `0${m + 1}` : m + 1}-01`;
