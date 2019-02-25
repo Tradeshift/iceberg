@@ -11,6 +11,7 @@ import CostChartStyles from './CostChartStyles';
 const CostChart = (props) => {
     const {
         threshold,
+        savedThreshold,
         costPoints,
         handleOnDrag,
     } = props;
@@ -19,7 +20,7 @@ const CostChart = (props) => {
             <Card title="Cost">
                 <Chart
                     data={getLineData(costPoints)}
-                    options={getLineOptions(threshold, handleOnDrag)}
+                    options={getLineOptions(threshold, savedThreshold, handleOnDrag)}
                 />
             </Card>
         </CostChartStyles>
@@ -30,6 +31,11 @@ CostChart.propTypes = {
     threshold: PropTypes.number.isRequired,
     costPoints: PropTypes.instanceOf(Array).isRequired,
     handleOnDrag: PropTypes.func.isRequired,
+    savedThreshold: PropTypes.number,
+};
+
+CostChart.defaultProps = {
+    savedThreshold: null,
 };
 
 export default CostChart;

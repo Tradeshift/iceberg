@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
 const CostsInputsStyles = styled.div`
-    grid-area: inputs;
+    width: 25%;
+    height: calc(60% - var(--gap)/2);
+    margin-top: var(--gap);
+    overflow-y: scroll;
 
     h5 {
         font-weight: 600;
@@ -15,8 +18,8 @@ const CostsInputsStyles = styled.div`
     }
 
     button {
-        display: block;
-        margin: 0 auto;
+        margin-top: auto;
+        align-self: center;
     }
 
     .inputWrapper {

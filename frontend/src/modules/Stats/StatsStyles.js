@@ -6,12 +6,15 @@ const StatsStyles = styled.div`
     border-radius: var(--radius);
     box-shadow: 0 5px 10px 0 var(--shadow-color);
     padding: var(--gap);
+    width: 25%;
+    height: calc(40% - var(--gap)/2);
+    overflow-y: scroll;
 
     div {
-        grid-area: stats;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        overflow-y: scroll;
         border-bottom: 1px solid var(--border-color);
         padding: var(--gap-sm) 0;
 

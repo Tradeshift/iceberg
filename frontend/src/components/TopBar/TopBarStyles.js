@@ -5,11 +5,15 @@ const TopBarStyles = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 80px;
+    height: var(--nav-height);
     background-color: var(--white);
     padding: var(--gap) var(--gap-lg);
     margin-bottom: var(--gap);
     border-bottom: 1px solid var(--border-color);
+
+    @media screen and (max-width: 600px) {
+        padding: var(--gap-sm) var(--gap-md);
+    }
 
     h1 {
         font-weight: 600;

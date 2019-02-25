@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { formatFloat } from 'utils/helpers';
+import { formatFloat, isNull } from 'utils/helpers';
 import StatsStyles from './StatsStyles';
 
 const Stats = (props) => {
     const {
         samples,
         outcomes,
+        savedThreshold,
         correctRate,
         errorRate,
         abstainRate,
@@ -38,6 +39,10 @@ const Stats = (props) => {
                 <h5>Average cost</h5>
                 <p>{formatFloat(averageCost)}</p>
             </div>
+            <div>
+                <h5>Saved threshold</h5>
+                <p>{isNull(savedThreshold) ? 'None saved' : formatFloat(savedThreshold)}</p>
+            </div>
         </StatsStyles>
     );
 };
@@ -49,6 +54,11 @@ Stats.propTypes = {
     errorRate: PropTypes.number.isRequired,
     abstainRate: PropTypes.number.isRequired,
     averageCost: PropTypes.number.isRequired,
+    savedThreshold: PropTypes.number,
+};
+
+Stats.defaultProps = {
+    savedThreshold: null,
 };
 
 export default Stats;

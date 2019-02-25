@@ -7,12 +7,21 @@ export const getValuePair = (arr, value) => {
     return key ? arr[parseInt(key, 10)].y : 0;
 };
 
-const d = new Date();
-const m = d.getMonth();
-const y = d.getFullYear();
-// const m = 0;
-// const y = 2019;
-const lastDay = new Date(y, m + 1, 0).getDate();
+export const isNull = n => n === null;
 
-export const startDate = `${y}-${m < 10 ? `0${m + 1}` : m + 1}-01`;
-export const endDate = `${y}-${m < 10 ? `0${m + 1}` : m + 1}-${lastDay}`;
+const today = new Date();
+const day = d => d.getDate();
+const month = d => d.getMonth();
+const year = d => d.getFullYear();
+
+const start = new Date(new Date().setDate(day(today) - 30));
+
+const formatDateToString = (d) => {
+    const dd = day(d);
+    const mm = month(d);
+    const yyyy = year(d);
+    return `${yyyy}-${mm < 10 ? `0${mm + 1}` : mm + 1}-${dd}`;
+};
+
+export const startDate = formatDateToString(start);
+export const endDate = formatDateToString(today);

@@ -8,9 +8,10 @@ import {
 import Card from '../../components/Card/Card';
 import StatsChartStyles from './StatsChartStyles';
 
-const Charts = (props) => {
+const StatsChart = (props) => {
     const {
         threshold,
+        savedThreshold,
         errors,
         abstains,
         corrects,
@@ -21,19 +22,24 @@ const Charts = (props) => {
             <Card title="Abstain threshold">
                 <Chart
                     data={getChartData(errors, abstains, corrects)}
-                    options={getChartOptions(threshold, handleOnDrag)}
+                    options={getChartOptions(threshold, savedThreshold, handleOnDrag)}
                 />
             </Card>
         </StatsChartStyles>
     );
 };
 
-Charts.propTypes = {
+StatsChart.propTypes = {
     threshold: PropTypes.number.isRequired,
     errors: PropTypes.instanceOf(Array).isRequired,
     abstains: PropTypes.instanceOf(Array).isRequired,
     corrects: PropTypes.instanceOf(Array).isRequired,
     handleOnDrag: PropTypes.func.isRequired,
+    savedThreshold: PropTypes.number,
 };
 
-export default Charts;
+StatsChart.defaultProps = {
+    savedThreshold: null,
+};
+
+export default StatsChart;

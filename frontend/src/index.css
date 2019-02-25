@@ -7,13 +7,18 @@
     --orange: #FFB65C;
     --white: #FFFFFF;
     --bg-color: #E5EBEE;
+    --bg-color-disabled: rgba(25, 34, 38, 0.05);
     --text-color: #192226;
+    --text-color-disabled: rgba(25, 34, 38, 0.2);
     --border-color: #CCD8DD;
+    --border-color-disabled: rgba(25, 34, 38, 0.02);
     --shadow-color: rgba(88, 124, 141, 0.1);
     --radius: 3px;
     --gap-sm: 10px;
     --gap: 20px;
+    --gap-md: 30px;
     --gap-lg: 60px;
+    --nav-height: 80px;
     --font-family: 'Open Sans';
     --font-xs: 12px;
     --font-sm: 13px;
@@ -34,27 +39,10 @@ a, a:hover {
     color: var(--blue);
 }
 
-/* Override table styling */
-.rt-th {
-    font-size: var(--font-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    text-align: left;
-}
-
-.rt-th, .rt-td {
-    padding: 10px!important;
-}
-
-.-pageInfo {
-    font-size: var(--font-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
 /* Override modal styles */
+
 .modal-content {
-    padding: calc(var(--gap-sm) + var(--gap));
+    padding: var(--gap-md) !important;
     min-width: 350px;
     text-align: center;
 }
@@ -66,17 +54,15 @@ a, a:hover {
 .modal-dialog h4 {
     font-family: var(--font-family);
     font-size: var(--font-md);
+    color: var(--text-color);
+    line-height: 20px;
 }
 
-.modal-content .fas {
-    font-size: 40px;
-    padding-bottom: var(--gap);
+.modal-content img {
+    padding-bottom: var(--gap-md);
 }
 
-.fa-check {
-    color: #50C610;
-}
-
-.fa-exclamation-triangle {
-    color: #BD0000;
+.modal-content button {
+    margin-top: var(--gap);
+    padding: var(--gap-sm) var(--gap-lg);
 }

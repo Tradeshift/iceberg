@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import 'chartjs-plugin-annotation';
 import 'chartjs-plugin-draggable';
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { map } from 'lodash';
+import { map, isEmpty } from 'lodash';
 import FeedbackModal from 'components/FeedbackModal/FeedbackModal';
+import DataNotFound from 'components/DataNotFound/DataNotFound';
 import TopBar from 'components/TopBar/TopBar';
 import Stats from 'modules/Stats/Stats';
 import CostsInputs from 'modules/CostsInputs/CostsInputs';
@@ -15,11 +16,12 @@ import {
     formatFloat,
     startDate,
     endDate,
+    isNull,
 } from 'utils/helpers';
-import SingleModelStyles from './ModelStyles';
+import ModelStyles from './ModelStyles';
 
 
-class Model extends Component {
+class Model extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -27,6 +29,7 @@ class Model extends Component {
             abstainCost: 0,
             correctCost: 0,
             threshold: 0,
+            savedThreshold: 0,
             outcomes: 0,
             samples: 0,
             stats: [{
@@ -39,6 +42,7 @@ class Model extends Component {
             end: endDate,
             showSuccessModal: false,
             showErrorModal: false,
+            noData: true,
         };
 
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -120,10 +124,12 @@ class Model extends Component {
                     errorCost: data.model.errorCost,
                     abstainCost: data.model.abstainCost,
                     correctCost: data.model.correctCost,
-                    threshold: data.model.threshold,
+                    threshold: isNull(data.model.threshold) ? 0 : data.model.threshold,
+                    savedThreshold: data.model.threshold,
                     outcomes: data.outcomes,
                     samples: data.samples,
                     stats: data.stats,
+                    noData: isEmpty(data.stats),
                 });
             })
             .catch(err => console.log(err));
@@ -136,6 +142,7 @@ class Model extends Component {
             abstainCost,
             correctCost,
             threshold,
+            savedThreshold,
             outcomes,
             samples,
             stats,
@@ -143,6 +150,7 @@ class Model extends Component {
             end,
             showSuccessModal,
             showErrorModal,
+            noData,
         } = this.state;
 
         const errors = map(stats, stat => ({
@@ -178,10 +186,11 @@ class Model extends Component {
                     start={start}
                     end={end}
                 />
-                <SingleModelStyles>
+                <ModelStyles>
                     <Stats
                         samples={samples}
                         outcomes={outcomes}
+                        savedThreshold={savedThreshold}
                         errorRate={errorRate}
                         abstainRate={abstainRate}
                         correctRate={correctRate}
@@ -192,27 +201,40 @@ class Model extends Component {
                         errorCost={errorCost}
                         abstainCost={abstainCost}
                         correctCost={correctCost}
+                        noData={noData}
                         handleOnChange={this.handleOnChange}
                         handleOnClick={this.handleOnSave}
                     />
-                    <StatsChart
-                        threshold={threshold}
-                        errors={errors}
-                        abstains={abstains}
-                        corrects={corrects}
-                        handleOnDrag={this.handleOnDrag}
-                    />
-                    <CostChart
-                        threshold={threshold}
-                        costPoints={costPoints}
-                        handleOnDrag={this.handleOnDrag}
-                    />
+                    {
+                        noData ? <DataNotFound />
+                            : (
+                                <StatsChart
+                                    threshold={threshold}
+                                    savedThreshold={savedThreshold}
+                                    errors={errors}
+                                    abstains={abstains}
+                                    corrects={corrects}
+                                    handleOnDrag={this.handleOnDrag}
+                                />
+                            )
+                    }
+                    {
+                        noData ? <DataNotFound />
+                            : (
+                                <CostChart
+                                    threshold={threshold}
+                                    savedThreshold={savedThreshold}
+                                    costPoints={costPoints}
+                                    handleOnDrag={this.handleOnDrag}
+                                />
+                            )
+                    }
                     <FeedbackModal
                         showSuccessModal={showSuccessModal}
                         showErrorModal={showErrorModal}
                         handleModalClose={this.handleModalClose}
                     />
-                </SingleModelStyles>
+                </ModelStyles>
             </>
         );
     }

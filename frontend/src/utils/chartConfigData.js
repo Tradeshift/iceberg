@@ -1,7 +1,8 @@
 /* eslint-disable object-shorthand */
 /* eslint-disable func-names */
+/* eslint-disable no-nested-ternary */
 
-import { formatFloat } from './helpers';
+import { formatFloat, isNull } from './helpers';
 
 export const getChartData = (errors, abstains, corrects) => ({
     datasets: [{
@@ -31,41 +32,65 @@ export const getChartData = (errors, abstains, corrects) => ({
     }],
 });
 
-export const getChartOptions = (threshold, handleOnDrag) => ({
+export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
     responsive: true,
     maintainAspectRatio: false,
     annotation: {
         drawTime: 'afterDraw',
         events: ['click', 'mouseover', 'mouseout'],
-        annotations: [{
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-1',
-            value: threshold,
-            borderColor: '#304249',
-            borderWidth: 1,
-            label: {
-                enabled: true,
-                content: `Threshold: ${formatFloat(threshold)}`,
-                fontFamily: 'Open Sans',
-                fontSize: 13,
-                cursor: 'col-resize',
+        annotations: [
+            {
+                type: isNull(savedThreshold) ? '' : 'line',
+                mode: 'vertical',
+                scaleID: 'x-axis-1',
+                value: savedThreshold,
+                borderColor: '#9AB1BB',
+                borderWidth: 1,
+                label: {
+                    enabled: true,
+                    content: `Saved: ${isNull(savedThreshold) ? '' : formatFloat(savedThreshold)}`,
+                    fontFamily: 'Open Sans',
+                    backgroundColor: '#E5EBEE',
+                    fontColor: '#192226',
+                    fontSize: 13,
+                    yPadding: 12,
+                    xPadding: 15,
+                    cursor: 'col-resize',
+                },
+                draggable: false,
             },
-            draggable: true,
-            onDrag: e => handleOnDrag(e),
-            onMouseover: function () {
-                const element = this;
-                element.options.borderWidth = 3;
-                element.chartInstance.update();
-                element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
-            },
-            onMouseout: function () {
-                const element = this;
-                element.options.borderWidth = 1;
-                element.chartInstance.update();
-                element.chartInstance.chart.canvas.style.cursor = 'initial';
-            },
-        }],
+            {
+                type: 'line',
+                mode: 'vertical',
+                scaleID: 'x-axis-1',
+                value: threshold,
+                borderColor: '#304249',
+                borderWidth: 1,
+                label: {
+                    enabled: true,
+                    content: `Threshold: ${formatFloat(threshold)}`,
+                    fontFamily: 'Open Sans',
+                    fontSize: 13,
+                    cursor: 'col-resize',
+                    yAdjust: isNull(savedThreshold) ? 0 : threshold >= savedThreshold ? -50 : 50,
+                    yPadding: 12,
+                    xPadding: 15,
+                },
+                draggable: true,
+                onDrag: e => handleOnDrag(e),
+                onMouseover: function () {
+                    const element = this;
+                    element.options.borderWidth = 3;
+                    element.chartInstance.update();
+                    element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+                },
+                onMouseout: function () {
+                    const element = this;
+                    element.options.borderWidth = 1;
+                    element.chartInstance.update();
+                    element.chartInstance.chart.canvas.style.cursor = 'initial';
+                },
+            }],
     },
     title: {
         display: false,
@@ -81,11 +106,6 @@ export const getChartOptions = (threshold, handleOnDrag) => ({
     legend: {
         display: true,
         position: 'top',
-        lables: {
-            boxWidth: 20,
-            fontFamily: 'Open Sans',
-            fontSize: 30,
-        },
     },
     layout: {
         padding: {
@@ -131,40 +151,65 @@ export const getLineData = costPoints => ({
     }],
 });
 
-export const getLineOptions = (threshold, handleOnDrag) => ({
+export const getLineOptions = (threshold, savedThreshold, handleOnDrag) => ({
     responsive: true,
     maintainAspectRatio: false,
     annotation: {
         drawTime: 'afterDraw',
         events: ['click', 'mouseover', 'mouseout'],
-        annotations: [{
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-1',
-            value: threshold,
-            borderColor: '#304249',
-            borderWidth: 1,
-            label: {
-                enabled: true,
-                content: `Threshold: ${formatFloat(threshold)}`,
-                fontFamily: 'Open Sans',
-                fontSize: 13,
+        annotations: [
+            {
+                type: isNull(savedThreshold) ? '' : 'line',
+                mode: 'vertical',
+                scaleID: 'x-axis-1',
+                value: savedThreshold,
+                borderColor: '#9AB1BB',
+                borderWidth: 1,
+                label: {
+                    enabled: true,
+                    content: `Saved: ${isNull(savedThreshold) ? '' : formatFloat(savedThreshold)}`,
+                    fontFamily: 'Open Sans',
+                    backgroundColor: '#E5EBEE',
+                    fontColor: '#192226',
+                    fontSize: 13,
+                    yPadding: 12,
+                    xPadding: 15,
+                    cursor: 'col-resize',
+                },
+                draggable: false,
             },
-            draggable: true,
-            onDrag: e => handleOnDrag(e),
-            onMouseover: function () {
-                const element = this;
-                element.options.borderWidth = 3;
-                element.chartInstance.update();
-                element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
-            },
-            onMouseout: function () {
-                const element = this;
-                element.options.borderWidth = 1;
-                element.chartInstance.update();
-                element.chartInstance.chart.canvas.style.cursor = 'initial';
-            },
-        }],
+            {
+                type: 'line',
+                mode: 'vertical',
+                scaleID: 'x-axis-1',
+                value: threshold,
+                borderColor: '#304249',
+                borderWidth: 1,
+                label: {
+                    enabled: true,
+                    content: `Threshold: ${formatFloat(threshold)}`,
+                    fontFamily: 'Open Sans',
+                    fontSize: 13,
+                    cursor: 'col-resize',
+                    yAdjust: isNull(savedThreshold) ? 0 : threshold >= savedThreshold ? -50 : 50,
+                    yPadding: 12,
+                    xPadding: 15,
+                },
+                draggable: true,
+                onDrag: e => handleOnDrag(e),
+                onMouseover: function () {
+                    const element = this;
+                    element.options.borderWidth = 3;
+                    element.chartInstance.update();
+                    element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+                },
+                onMouseout: function () {
+                    const element = this;
+                    element.options.borderWidth = 1;
+                    element.chartInstance.update();
+                    element.chartInstance.chart.canvas.style.cursor = 'initial';
+                },
+            }],
     },
     title: {
         display: false,
@@ -180,11 +225,6 @@ export const getLineOptions = (threshold, handleOnDrag) => ({
     legend: {
         display: true,
         position: 'top',
-        lables: [{
-            boxWidth: 20,
-            fontFamily: 'Open Sans',
-            fontSize: 30,
-        }],
     },
     scales: {
         xAxes: [{

@@ -40,7 +40,7 @@ const TopBar = ({
                     value={end}
                     handleOnChange={handleOnChange}
                 />
-                <Button handleOnClick={handleChangeDate}>Apply</Button>
+                <Button handleOnClick={handleChangeDate} secondary>Apply dates</Button>
             </div>
         )}
     </TopBarStyles>

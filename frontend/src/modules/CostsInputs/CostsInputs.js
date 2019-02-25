@@ -10,6 +10,7 @@ const CostsInputs = (props) => {
         errorCost,
         abstainCost,
         correctCost,
+        noData,
         handleOnChange,
         handleOnClick,
     } = props;
@@ -56,7 +57,10 @@ const CostsInputs = (props) => {
                 <span className="info">
                     Drag the threshold on the graph to the right.
                 </span>
-                <Button handleOnClick={handleOnClick}>
+                <Button
+                    disabled={noData}
+                    handleOnClick={handleOnClick}
+                >
                     Update &amp; save threshold
                 </Button>
             </Card>
@@ -68,6 +72,7 @@ CostsInputs.propTypes = {
     errorCost: PropTypes.number.isRequired,
     abstainCost: PropTypes.number.isRequired,
     correctCost: PropTypes.number.isRequired,
+    noData: PropTypes.bool.isRequired,
     handleOnChange: PropTypes.func.isRequired,
     handleOnClick: PropTypes.func.isRequired,
 };
