@@ -98,6 +98,7 @@ class Model extends React.Component {
                 if (res.ok) {
                     this.setState({
                         showSuccessModal: true,
+                        savedThreshold: threshold,
                     });
                 } else {
                     this.setState({

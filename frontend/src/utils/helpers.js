@@ -20,7 +20,7 @@ const formatDateToString = (d) => {
     const dd = day(d);
     const mm = month(d);
     const yyyy = year(d);
-    return `${yyyy}-${mm < 10 ? `0${mm + 1}` : mm + 1}-${dd}`;
+    return `${yyyy}-${mm < 10 ? `0${mm + 1}` : mm + 1}-${dd < 10 ? `0${dd}` : dd}`;
 };
 
 export const startDate = formatDateToString(start);
