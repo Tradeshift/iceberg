@@ -9,7 +9,6 @@ const App = () => (
             <Route exact path="/" component={ModelsList} />
             <Route path="/model/:username/:modelId" component={Model} />
         </>
-
     </Router>
 );
 
