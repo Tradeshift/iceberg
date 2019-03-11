@@ -15,6 +15,7 @@ import liquibase.Liquibase
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
 import mu.KotlinLogging
+import RootResource
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
@@ -49,6 +50,7 @@ class IcebergApplication : Application<IcebergConfiguration>() {
 
         environment.objectMapper.registerModule(KotlinModule())
         environment.jersey().register(multiResource)
+        environment.jersey().register(RootResource())
     }
 
     private fun setupDatabase(environment: Environment, config: IcebergConfiguration): Jdbi {
