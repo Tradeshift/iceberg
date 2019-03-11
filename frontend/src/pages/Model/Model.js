@@ -80,7 +80,7 @@ class Model extends React.Component {
             correctCost,
         } = this.state;
         fetch(
-            `/multi/${match.params.username}/${match.params.modelId}`,
+            `/iceberg/multi/${match.params.username}/${match.params.modelId}`,
             {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -115,7 +115,7 @@ class Model extends React.Component {
 
     fetchModelData = (match, start, end) => {
         fetch(
-            `/multi/${match.params.username}/${match.params.modelId}/thresholds?from=${start}&to=${end}`, {
+            `/iceberg/multi/${match.params.username}/${match.params.modelId}/thresholds?from=${start}&to=${end}`, {
                 accept: 'application/json',
             },
         )

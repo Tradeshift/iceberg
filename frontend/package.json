@@ -21,7 +21,7 @@
     "typescript": "^3.3.3"
   },
   "proxy": "http://localhost:8080",
-  "homepage": "/iceberg",
+  "homepage": "/iceberg/app",
   "scripts": {
     "start": "NODE_PATH=src react-scripts start",
     "build": "NODE_PATH=src react-scripts build",
