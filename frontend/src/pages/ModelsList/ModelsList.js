@@ -14,7 +14,7 @@ class ModelsList extends Component {
     }
 
     componentDidMount() {
-        fetch('/multi', {
+        fetch('/iceberg/multi', {
             accept: 'application/json',
         })
             .then(results => results.json())

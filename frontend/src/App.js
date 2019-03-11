@@ -4,7 +4,7 @@ import Model from './pages/Model/Model';
 import ModelsList from './pages/ModelsList/ModelsList';
 
 const App = () => (
-    <Router basename="/iceberg">
+    <Router basename="/">
         <>
             <Route exact path="/" component={ModelsList} />
             <Route path="/model/:username/:modelId" component={Model} />
