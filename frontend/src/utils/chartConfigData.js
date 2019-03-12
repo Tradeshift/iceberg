@@ -81,14 +81,14 @@ export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
                 onMouseover: function () {
                     const element = this;
                     element.options.borderWidth = 3;
-                    element.chartInstance.update();
                     element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+                    element.chartInstance.update();
                 },
                 onMouseout: function () {
                     const element = this;
                     element.options.borderWidth = 1;
-                    element.chartInstance.update();
                     element.chartInstance.chart.canvas.style.cursor = 'initial';
+                    element.chartInstance.update();
                 },
             }],
     },
@@ -96,8 +96,7 @@ export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
         display: false,
     },
     tooltips: {
-        mode: 'nearest',
-        intersect: false,
+        enabled: false,
     },
     hover: {
         mode: 'nearest',
@@ -200,14 +199,14 @@ export const getLineOptions = (threshold, savedThreshold, handleOnDrag) => ({
                 onMouseover: function () {
                     const element = this;
                     element.options.borderWidth = 3;
-                    element.chartInstance.update();
                     element.chartInstance.chart.canvas.style.cursor = 'ew-resize';
+                    element.chartInstance.update();
                 },
                 onMouseout: function () {
                     const element = this;
                     element.options.borderWidth = 1;
-                    element.chartInstance.update();
                     element.chartInstance.chart.canvas.style.cursor = 'initial';
+                    element.chartInstance.update();
                 },
             }],
     },
@@ -215,8 +214,7 @@ export const getLineOptions = (threshold, savedThreshold, handleOnDrag) => ({
         display: false,
     },
     tooltips: {
-        mode: 'index',
-        intersect: false,
+        enabled: false,
     },
     hover: {
         mode: 'nearest',
