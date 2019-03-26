@@ -16,7 +16,7 @@ COPY src src
 COPY --from=build-fe /frontend/build src/main/resources/app
 RUN ["mvn", "-B", "package"]
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim
 WORKDIR /app
 
 COPY --from=build-be /backend/target/iceberg*.jar iceberg.jar
