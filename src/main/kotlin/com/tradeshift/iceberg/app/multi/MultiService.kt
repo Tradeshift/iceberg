@@ -33,7 +33,7 @@ class MultiService(
             username,
             modelId,
             Timestamp.valueOf(from.atStartOfDay()),
-            Timestamp.valueOf(to.atStartOfDay()),
+            Timestamp.valueOf(to.plusDays(1).atStartOfDay()),
             limit
         )
         val stats = if (data.isEmpty()) {
