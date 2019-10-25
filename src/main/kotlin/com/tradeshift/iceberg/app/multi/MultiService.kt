@@ -33,7 +33,7 @@ class MultiService(
             username,
             modelId,
             Timestamp.valueOf(from.atStartOfDay()),
-            Timestamp.valueOf(to.atStartOfDay()),
+            Timestamp.valueOf(to.plusDays(1).atStartOfDay()),
             limit
         )
         val stats = if (data.isEmpty()) {
@@ -50,8 +50,8 @@ class MultiService(
         return MultiStatsResponse(model, data.size, data.map { it.correct }.toSet().size, stats)
     }
 
-    fun getModels(page: Int): List<MultiModel> {
-        return multiDAO.getModels(page)
+    fun getModels(page: Int, username: String?, id: String?): List<MultiModel> {
+        return multiDAO.getModels(page, username, id)
     }
 
     fun getModelsForUser(username: String, page: Int): List<MultiModel> {
@@ -72,3 +72,4 @@ class MultiService(
     }
 
 }
+

@@ -54,9 +54,11 @@ class MultiResource(
     @GET
     @Path("/")
     fun getAllModels(
-        @QueryParam("page") page: Int
+        @QueryParam("page") page: Int,
+        @QueryParam("username") username: String?,
+        @QueryParam("id") id: String?
     ): List<MultiModel> {
-        return service.getModels(page)
+        return service.getModels(page, username, id)
     }
 
     @GET

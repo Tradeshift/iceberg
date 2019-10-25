@@ -131,6 +131,32 @@ class MultiDAOTest {
     }
 
     @Test
+    fun test_search_for_models() {
+        val dao = MultiDAO(jdbi!!)
+
+        val m1 = MultiModel("user-bar", "model-bar-1", 0.0f, 0.0f, 0.0f, 0.0f)
+        val m2 = MultiModel("user-bar", "model-bar-2", 0.0f, 0.0f, 0.0f, 0.0f)
+        val m3 = MultiModel("user-foo", "model-foo-1", 0.0f, 0.0f, 0.0f, 0.0f)
+        val m4 = MultiModel("user-foo", "model-foo-2", 0.0f, 0.0f, 0.0f, 0.0f)
+        dao.addModel(m1)
+        dao.addModel(m2)
+        dao.addModel(m3)
+        dao.addModel(m4)
+
+        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0))
+        assertEquals(listOf<MultiModel>(), dao.getModels(0, "zap"))
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-b"))
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar"))
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar", "model"))
+        assertEquals(listOf(m1), dao.getModels(0, "user-bar", "model-bar-1"))
+        assertEquals(listOf(m2), dao.getModels(0, "user-bar", "model-bar-2"))
+        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0, "user", "model"))
+        assertEquals(listOf(m3, m4), dao.getModels(0, "user-fo", "model"))
+        assertEquals(listOf<MultiModel>(), dao.getModels(0, "user-ba", "model-foo"))
+        assertEquals(listOf(m4), dao.getModels(0, "user-fo", "model-foo-2"))
+    }
+
+    @Test
     fun update_model() {
         val dao = MultiDAO(jdbi!!)
         fun rf() = random().toFloat()

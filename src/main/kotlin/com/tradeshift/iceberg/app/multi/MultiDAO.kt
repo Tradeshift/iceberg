@@ -75,7 +75,7 @@ class MultiDAO(
                 "SELECT ts, correct, predictions from multi_data where " +
                         "multi_id = :modelId and " +
                         "multi_username = :username and " +
-                        "ts between :from and :to " +
+                        ":from <= ts and ts <= :to " +
                         "order by random() " +
                         "limit :limit"
             )
@@ -97,13 +97,32 @@ class MultiDAO(
         }
     }
 
-    fun getModels(page: Int): List<MultiModel> {
+    fun getModels(page: Int, username: String? = null, id: String? = null): List<MultiModel> {
+        val conditions = mutableListOf<String>()
+        if (username != null) {
+            conditions.add("username like :username")
+        }
+        if (id != null) {
+            conditions.add("id like :id")
+        }
+
+        val where = if (conditions.isNotEmpty()) {
+            "where " + conditions.joinToString(" and ")
+        } else {
+            ""
+        }
         return jdbi.withHandleUnchecked {
-            it.createQuery("SELECT * from multi order by username, id limit :pageSize offset :offset")
+            var q = it.createQuery("SELECT * from multi $where order by username, id limit :pageSize offset :offset")
                 .bind("pageSize", pageSize)
                 .bind("offset", page * pageSize)
-                .mapTo<MultiModel>()
-                .list()
+            if (username != null) {
+                q = q.bind("username", "$username%")
+            }
+            if (id != null) {
+                q = q.bind("id", "$id%")
+            }
+
+            q.mapTo<MultiModel>().list()
         }
     }
 
