@@ -22,6 +22,9 @@ class ConfusionMatrixTest {
         assertTrue(cm.abstain.isNaN())
         assertTrue(cm.recall.isNaN())
         assertTrue(cm.precision.isNaN())
+        assertTrue(cm.correct95PercentCredibleInterval.toList().all { it.isNaN() })
+        assertTrue(cm.error95PercentCredibleInterval.toList().all { it.isNaN() })
+        assertTrue(cm.abstain95PercentCredibleInterval.toList().all { it.isNaN() })
     }
 
     @Test
@@ -47,6 +50,15 @@ class ConfusionMatrixTest {
         assertEquals(0.0, cm.abstain, 0.0)
         assertEquals(((5.0 / 6.0) + (7.0 / 10.0)) / 2, cm.recall, 0.0)
         assertEquals(((5.0 / 8.0) + (7.0 / 8.0)) / 2, cm.precision, 0.0)
+
+        assertEquals(0.5010, cm.correct95PercentCredibleInterval.first, 0.0001)
+        assertEquals(0.8968, cm.correct95PercentCredibleInterval.second, 0.0001)
+
+        assertEquals(0.1031, cm.error95PercentCredibleInterval.first, 0.0001)
+        assertEquals(0.4989, cm.error95PercentCredibleInterval.second, 0.0001)
+
+        assertEquals(0.0014, cm.abstain95PercentCredibleInterval.first, 0.0001)
+        assertEquals(0.1950, cm.abstain95PercentCredibleInterval.second, 0.0001)
     }
 
     @Test
