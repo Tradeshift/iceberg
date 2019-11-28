@@ -43,7 +43,17 @@ class MultiService(
             for (i in 0..100) {
                 val threshold = i / 100.0
                 val cm = ConfusionMatrix.from(data, threshold)
-                stats.add(MultiStats(threshold, cm.correct, cm.error, cm.abstain))
+                stats.add(
+                    MultiStats(
+                        threshold,
+                        cm.correct,
+                        cm.correct95PercentCredibleInterval.toList(),
+                        cm.error,
+                        cm.error95PercentCredibleInterval.toList(),
+                        cm.abstain,
+                        cm.abstain95PercentCredibleInterval.toList()
+                    )
+                )
             }
             stats
         }
