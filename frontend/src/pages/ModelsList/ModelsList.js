@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import ReactTable from 'react-table';
+import ReactTable from 'react-table-v6';
 import TopBar from 'components/TopBar/TopBar';
 import ModelsListStyles from './ModelsListStyles';
 
