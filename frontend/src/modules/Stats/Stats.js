@@ -68,9 +68,15 @@ const Stats = (props) => {
 Stats.propTypes = {
     samples: PropTypes.number.isRequired,
     outcomes: PropTypes.number.isRequired,
-    correctRate: PropTypes.number.isRequired,
+    minErrorRate: PropTypes.number.isRequired,
     errorRate: PropTypes.number.isRequired,
+    maxErrorRate: PropTypes.number.isRequired,
+    minAbstainRate: PropTypes.number.isRequired,
     abstainRate: PropTypes.number.isRequired,
+    maxAbstainRate: PropTypes.number.isRequired,
+    minCorrectRate: PropTypes.number.isRequired,
+    correctRate: PropTypes.number.isRequired,
+    maxCorrectRate: PropTypes.number.isRequired,
     averageCost: PropTypes.number.isRequired,
     savedThreshold: PropTypes.number,
 };
