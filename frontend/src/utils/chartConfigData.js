@@ -3,33 +3,90 @@
 /* eslint-disable no-nested-ternary */
 
 import { formatFloat, isNull } from './helpers';
+import colors from './constants';
 
-export const getChartData = (errors, abstains, corrects) => ({
-    datasets: [{
-        pointRadius: 0,
-        showLine: true,
-        label: 'Error',
-        backgroundColor: '#D55D5D',
-        borderColor: '#D55D5D',
-        data: errors,
-        fill: false,
-    }, {
-        pointRadius: 0,
-        showLine: true,
-        label: 'Abstain',
-        fill: false,
-        backgroundColor: '#00B0FF',
-        borderColor: '#00B0FF',
-        data: abstains,
-    }, {
-        pointRadius: 0,
-        showLine: true,
-        label: 'Correct',
-        fill: false,
-        backgroundColor: '#8EDA65',
-        borderColor: '#8EDA65',
-        data: corrects,
-    }],
+export const getChartData = (
+    errors,
+    abstains,
+    corrects,
+    minErrors,
+    maxErrors,
+    minAbstains,
+    maxAbstains,
+    minCorrects,
+    maxCorrects,
+) => ({
+    datasets: [
+        {
+            pointRadius: 0,
+            showLine: true,
+            backgroundColor: 'rgba(213, 93, 93, 0.2)',
+            borderColor: 'rgba(213, 93, 93, 0)',
+            data: minErrors,
+            fill: '+2',
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            label: 'Error',
+            borderColor: colors.lightred,
+            data: errors,
+            fill: false,
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            borderColor: 'rgba(213, 93, 93, 0)',
+            data: maxErrors,
+            fill: false,
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            backgroundColor: 'rgba(0, 176, 255, 0.2)',
+            borderColor: 'rgba(0, 176, 255, 0)',
+            data: minAbstains,
+            fill: '+2',
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            label: 'Abstain',
+            fill: false,
+            borderColor: colors.blue,
+            data: abstains,
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            borderColor: 'rgba(0, 176, 255, 0)',
+            data: maxAbstains,
+            fill: false,
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            backgroundColor: 'rgba(142, 218, 101, 0.2)',
+            borderColor: 'rgba(142, 218, 101, 0)',
+            data: minCorrects,
+            fill: '+2',
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            label: 'Correct',
+            borderColor: colors.lightgreen,
+            data: corrects,
+            fill: false,
+        },
+        {
+            pointRadius: 0,
+            showLine: true,
+            borderColor: 'rgba(142, 218, 101, 0)',
+            data: maxCorrects,
+            fill: false,
+        },
+    ],
 });
 
 export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
@@ -103,15 +160,16 @@ export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
         intersect: true,
     },
     legend: {
-        display: true,
-        position: 'top',
+        display: false,
     },
-    layout: {
-        padding: {
-            left: 20,
-            right: 20,
-        },
-    },
+    // layout: {
+    //     padding: {
+    //         left: 20,
+    //         right: 20,
+    //         top: 5,
+    //         bottom: 5,
+    //     },
+    // },
     scales: {
         xAxes: [{
             display: true,
@@ -134,7 +192,30 @@ export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
                 fontColor: '#192226',
                 fontStyle: 'bold',
             },
+            ticks: {
+                max: 100.5,
+                min: -0.5,
+                callback: function (value, index, values) {
+                    if (value !== 100.5 && value !== -0.5) {
+                        return values[index];
+                    }
+                },
+            },
         }],
+    },
+    spanGaps: false,
+    elements: {
+        line: {
+            tension: 0.000001,
+        },
+    },
+    plugins: {
+        filler: {
+            propagate: false,
+        },
+        'samples-filler-analyser': {
+            target: 'chart-analyser',
+        },
     },
 });
 
@@ -143,8 +224,8 @@ export const getLineData = costPoints => ({
         pointRadius: 0,
         showLine: true,
         label: 'Cost',
-        backgroundColor: '#FFB65C',
-        borderColor: '#FFB65C',
+        backgroundColor: colors.lightorange,
+        borderColor: colors.lightorange,
         data: costPoints,
         fill: false,
     }],
@@ -221,8 +302,7 @@ export const getLineOptions = (threshold, savedThreshold, handleOnDrag) => ({
         intersect: true,
     },
     legend: {
-        display: true,
-        position: 'top',
+        display: false,
     },
     scales: {
         xAxes: [{

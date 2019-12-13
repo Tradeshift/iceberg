@@ -28,6 +28,11 @@ const StatsStyles = styled.div`
             text-transform: uppercase;
             font-size: var(--font-xs);
         }
+
+        span {
+            color: var(--text-legend);
+            font-weight: 500;
+        }
     }
 `;
 

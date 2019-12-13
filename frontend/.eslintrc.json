@@ -3,9 +3,10 @@
     "parser": "babel-eslint",
     "rules": { 
         "react/jsx-filename-extension": [0],
-        "indent": ["error", 4],
+        "indent": ["error", 4, "spaces"],
         "react/jsx-indent": ["error", 4],
-        "react/jsx-indent-props": ["error", 4]
+        "react/jsx-indent-props": ["error", 4],
+        "import/no-unresolved": "off"
      },
     "env": {
         "browser": true

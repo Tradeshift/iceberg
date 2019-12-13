@@ -8,11 +8,20 @@ const Stats = (props) => {
         samples,
         outcomes,
         savedThreshold,
-        correctRate,
+        minErrorRate,
         errorRate,
+        maxErrorRate,
+        minAbstainRate,
         abstainRate,
+        maxAbstainRate,
+        minCorrectRate,
+        correctRate,
+        maxCorrectRate,
         averageCost,
     } = props;
+
+    const formatInterval = (minVal, maxVal) => `(${minVal}% - ${maxVal}%)`;
+
     return (
         <StatsStyles>
             <div>
@@ -25,15 +34,24 @@ const Stats = (props) => {
             </div>
             <div>
                 <h5>Correct</h5>
-                <p>{`${correctRate}%`}</p>
+                <p>
+                    {`${correctRate}% `}
+                    <span>{formatInterval(minCorrectRate, maxCorrectRate)}</span>
+                </p>
             </div>
             <div>
                 <h5>Errors</h5>
-                <p>{`${errorRate}%`}</p>
+                <p>
+                    {`${errorRate}% `}
+                    <span>{formatInterval(minErrorRate, maxErrorRate)}</span>
+                </p>
             </div>
             <div>
                 <h5>Abstentions</h5>
-                <p>{`${abstainRate}%`}</p>
+                <p>
+                    {`${abstainRate}% `}
+                    <span>{formatInterval(minAbstainRate, maxAbstainRate)}</span>
+                </p>
             </div>
             <div>
                 <h5>Average cost</h5>
