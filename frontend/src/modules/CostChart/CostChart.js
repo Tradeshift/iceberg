@@ -7,6 +7,7 @@ import {
 } from 'utils/chartConfigData';
 import Card from 'components/Card/Card';
 import CostChartStyles from './CostChartStyles';
+import colors from '../../utils/constants';
 
 const CostChart = (props) => {
     const {
@@ -15,9 +16,21 @@ const CostChart = (props) => {
         costPoints,
         handleOnDrag,
     } = props;
+
+    const legendItems = [
+        {
+            name: 'Cost',
+            color: colors.lightorange
+        }
+    ];
+
     return (
         <CostChartStyles>
-            <Card title="Cost">
+            <Card
+                title="Cost"
+                legendItems={legendItems}
+                withLegend
+            >
                 <Chart
                     data={getLineData(costPoints)}
                     options={getLineOptions(threshold, savedThreshold, handleOnDrag)}

@@ -37,6 +37,9 @@ class Model extends React.Component {
                 correct: '',
                 error: '',
                 abstain: '',
+                errorCredibleInterval: '',
+                abstainCredibleInterval: '',
+                correctCredibleInterval: '',
             }],
             start: startDate,
             end: endDate,
@@ -154,18 +157,51 @@ class Model extends React.Component {
             noData,
         } = this.state;
 
+        const minErrors = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.errorCredibleInterval[0] * 100),
+        }));
+
         const errors = map(stats, stat => ({
             x: stat.threshold,
             y: Math.round(stat.error * 100),
         }));
+
+        const maxErrors = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.errorCredibleInterval[1] * 100),
+        }));
+
+        const minAbstains = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.abstainCredibleInterval[0] * 100),
+        }));
+
         const abstains = map(stats, stat => ({
             x: stat.threshold,
             y: Math.round(stat.abstain * 100),
         }));
+
+        const maxAbstains = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.abstainCredibleInterval[1] * 100),
+        }));
+
+        const minCorrects = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.correctCredibleInterval[0] * 100),
+        }));
+
         const corrects = map(stats, stat => ({
             x: stat.threshold,
             y: Math.round(stat.correct * 100),
         }));
+
+        const maxCorrects = map(stats, stat => ({
+            x: stat.threshold,
+            y: Math.round(stat.correctCredibleInterval[1] * 100),
+        }));
+
         const costPoints = map(stats, stat => ({
             x: stat.threshold,
             y: formatFloat(errorCost * stat.error
@@ -174,9 +210,15 @@ class Model extends React.Component {
         }));
 
         const averageCost = getValuePair(costPoints, threshold);
+        const minErrorRate = getValuePair(minErrors, threshold);
         const errorRate = getValuePair(errors, threshold);
+        const maxErrorRate = getValuePair(maxErrors, threshold);
+        const minAbstainRate = getValuePair(minAbstains, threshold);
         const abstainRate = getValuePair(abstains, threshold);
+        const maxAbstainRate = getValuePair(maxAbstains, threshold);
+        const minCorrectRate = getValuePair(minCorrects, threshold);
         const correctRate = getValuePair(corrects, threshold);
+        const maxCorrectRate = getValuePair(maxCorrects, threshold);
 
         return (
             <>
@@ -192,9 +234,15 @@ class Model extends React.Component {
                         samples={samples}
                         outcomes={outcomes}
                         savedThreshold={savedThreshold}
+                        minErrorRate={minErrorRate}
                         errorRate={errorRate}
+                        maxErrorRate={maxErrorRate}
+                        minAbstainRate={minAbstainRate}
                         abstainRate={abstainRate}
+                        maxAbstainRate={maxAbstainRate}
+                        minCorrectRate={minCorrectRate}
                         correctRate={correctRate}
+                        maxCorrectRate={maxCorrectRate}
                         averageCost={averageCost}
                     />
                     <CostsInputs
@@ -212,9 +260,15 @@ class Model extends React.Component {
                                 <StatsChart
                                     threshold={threshold}
                                     savedThreshold={savedThreshold}
+                                    minErrors={minErrors}
                                     errors={errors}
+                                    maxErrors={maxErrors}
+                                    minAbstains={minAbstains}
                                     abstains={abstains}
+                                    maxAbstains={maxAbstains}
+                                    minCorrects={minCorrects}
                                     corrects={corrects}
+                                    maxCorrects={maxCorrects}
                                     handleOnDrag={this.handleOnDrag}
                                 />
                             )

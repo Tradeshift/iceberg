@@ -15,6 +15,27 @@ const CardStyles = styled.div`
         font-weight: 600;
         font-size: var(--font-lg);
     }
+
+    ${props => props.withLegend && `
+        .title--with-legend {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: var(--gap) var(--gap-sm);
+            padding-top: 0;
+
+            h3 {
+                font-weight: 600;
+                font-size: var(--font-xs);
+                margin: 0;
+            }
+
+            @media screen and (max-width: 600px) {
+                flex-wrap: wrap;
+            }
+        }
+        
+    `}
 `;
 
 export default CardStyles;
