@@ -1,9 +1,6 @@
 package com.tradeshift.iceberg.app.multi
 
-import com.tradeshift.iceberg.app.multi.dto.MultiDatum
-import com.tradeshift.iceberg.app.multi.dto.MultiModel
-import com.tradeshift.iceberg.app.multi.dto.MultiStats
-import com.tradeshift.iceberg.app.multi.dto.MultiStatsResponse
+import com.tradeshift.iceberg.app.multi.dto.*
 import com.tradeshift.iceberg.core.ConfusionMatrix
 import java.sql.Timestamp
 import java.time.LocalDate
@@ -60,11 +57,11 @@ class MultiService(
         return MultiStatsResponse(model, data.size, data.map { it.correct }.toSet().size, stats)
     }
 
-    fun getModels(page: Int, username: String?, id: String?): List<MultiModel> {
+    fun getModels(page: Int, username: String?, id: String?): PagedModels {
         return multiDAO.getModels(page, username, id)
     }
 
-    fun getModelsForUser(username: String, page: Int): List<MultiModel> {
+    fun getModelsForUser(username: String, page: Int): PagedModels {
         return multiDAO.getModelsForUser(username, page)
     }
 

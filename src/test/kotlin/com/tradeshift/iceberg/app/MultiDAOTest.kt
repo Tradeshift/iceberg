@@ -125,9 +125,11 @@ class MultiDAOTest {
         }
         models.forEach { dao.addModel(it) }
         val sorted = models.sortedBy { it.username + it.id }
-        assertEquals(sorted.subList(0, 100), dao.getModels(0))
-        assertEquals(sorted.subList(100, 150), dao.getModels(1))
-        assertTrue(dao.getModels(2).isEmpty())
+        val p0 = dao.getModels(0)
+        assertEquals(p0.numPages, 2)
+        assertEquals(sorted.subList(0, 100), p0.models)
+        assertEquals(sorted.subList(100, 150), dao.getModels(1).models)
+        assertTrue(dao.getModels(2).models.isEmpty())
     }
 
     @Test
@@ -143,17 +145,17 @@ class MultiDAOTest {
         dao.addModel(m3)
         dao.addModel(m4)
 
-        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0))
-        assertEquals(listOf<MultiModel>(), dao.getModels(0, "zap"))
-        assertEquals(listOf(m1, m2), dao.getModels(0, "user-b"))
-        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar"))
-        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar", "model"))
-        assertEquals(listOf(m1), dao.getModels(0, "user-bar", "model-bar-1"))
-        assertEquals(listOf(m2), dao.getModels(0, "user-bar", "model-bar-2"))
-        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0, "user", "model"))
-        assertEquals(listOf(m3, m4), dao.getModels(0, "user-fo", "model"))
-        assertEquals(listOf<MultiModel>(), dao.getModels(0, "user-ba", "model-foo"))
-        assertEquals(listOf(m4), dao.getModels(0, "user-fo", "model-foo-2"))
+        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0).models)
+        assertEquals(listOf<MultiModel>(), dao.getModels(0, "zap").models)
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-b").models)
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar").models)
+        assertEquals(listOf(m1, m2), dao.getModels(0, "user-bar", "model").models)
+        assertEquals(listOf(m1), dao.getModels(0, "user-bar", "model-bar-1").models)
+        assertEquals(listOf(m2), dao.getModels(0, "user-bar", "model-bar-2").models)
+        assertEquals(listOf(m1, m2, m3, m4), dao.getModels(0, "user", "model").models)
+        assertEquals(listOf(m3, m4), dao.getModels(0, "user-fo", "model").models)
+        assertEquals(listOf<MultiModel>(), dao.getModels(0, "user-ba", "model-foo").models)
+        assertEquals(listOf(m4), dao.getModels(0, "user-fo", "model-foo-2").models)
     }
 
     @Test
@@ -182,9 +184,11 @@ class MultiDAOTest {
         }
         models.forEach { dao.addModel(it) }
         val sorted = models.sortedBy { it.username + it.id }
-        assertEquals(sorted.subList(0, 100), dao.getModelsForUser("foo", 0))
-        assertEquals(sorted.subList(100, 150), dao.getModelsForUser("foo", 1))
-        assertTrue(dao.getModelsForUser("foo", 2).isEmpty())
+        val p0 = dao.getModelsForUser("foo", 0)
+        assertEquals(p0.numPages, 2)
+        assertEquals(sorted.subList(0, 100), p0.models)
+        assertEquals(sorted.subList(100, 150), dao.getModelsForUser("foo", 1).models)
+        assertTrue(dao.getModelsForUser("foo", 2).models.isEmpty())
     }
 
     @Test

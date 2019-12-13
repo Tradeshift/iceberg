@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
 import com.tradeshift.iceberg.app.multi.dto.MultiModel
+import com.tradeshift.iceberg.app.multi.dto.PagedModels
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.kotlin.useHandleUnchecked
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import java.sql.Timestamp
+import kotlin.math.ceil
 
 class MultiDAO(
     private val jdbi: Jdbi
@@ -97,7 +99,7 @@ class MultiDAO(
         }
     }
 
-    fun getModels(page: Int, username: String? = null, id: String? = null): List<MultiModel> {
+    fun getModels(page: Int, username: String? = null, id: String? = null): PagedModels {
         val conditions = mutableListOf<String>()
         if (username != null) {
             conditions.add("username like :username")
@@ -112,9 +114,19 @@ class MultiDAO(
             ""
         }
         return jdbi.withHandleUnchecked {
+            var cq = it.createQuery("SELECT count(*) from multi $where")
+            if (username != null) {
+                cq = cq.bind("username", "$username%")
+            }
+            if (id != null) {
+                cq = cq.bind("id", "$id%")
+            }
+            val total = cq.mapTo<Int>().findOnly()
+
             var q = it.createQuery("SELECT * from multi $where order by username, id limit :pageSize offset :offset")
                 .bind("pageSize", pageSize)
                 .bind("offset", page * pageSize)
+
             if (username != null) {
                 q = q.bind("username", "$username%")
             }
@@ -122,18 +134,28 @@ class MultiDAO(
                 q = q.bind("id", "$id%")
             }
 
-            q.mapTo<MultiModel>().list()
+            val models = q.mapTo<MultiModel>().list()
+
+            PagedModels(page, ceil(total.toDouble() / pageSize).toInt(), models)
         }
     }
 
-    fun getModelsForUser(username: String, page: Int): List<MultiModel> {
+    fun getModelsForUser(username: String, page: Int): PagedModels {
         return jdbi.withHandleUnchecked {
-            it.createQuery("SELECT * from multi where username = :username order by id limit :pageSize offset :offset")
-                .bind("pageSize", pageSize)
-                .bind("offset", page * pageSize)
+            val models =
+                it.createQuery("SELECT * from multi where username = :username order by id limit :pageSize offset :offset")
+                    .bind("pageSize", pageSize)
+                    .bind("offset", page * pageSize)
+                    .bind("username", username)
+                    .mapTo<MultiModel>()
+                    .list()
+
+            val total = it.createQuery("SELECT count(*) from multi where username = :username")
                 .bind("username", username)
-                .mapTo<MultiModel>()
-                .list()
+                .mapTo<Int>()
+                .findOnly()
+
+            PagedModels(page, ceil(total.toDouble() / pageSize).toInt(), models)
         }
     }
 
