@@ -20,6 +20,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'minErrors',
             backgroundColor: 'rgba(213, 93, 93, 0.2)',
             borderColor: 'rgba(213, 93, 93, 0)',
             data: minErrors,
@@ -36,6 +37,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'maxErrors',
             borderColor: 'rgba(213, 93, 93, 0)',
             data: maxErrors,
             fill: false,
@@ -43,6 +45,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'minAbstains',
             backgroundColor: 'rgba(0, 176, 255, 0.2)',
             borderColor: 'rgba(0, 176, 255, 0)',
             data: minAbstains,
@@ -59,6 +62,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'maxAbstains',
             borderColor: 'rgba(0, 176, 255, 0)',
             data: maxAbstains,
             fill: false,
@@ -66,6 +70,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'minCorrects',
             backgroundColor: 'rgba(142, 218, 101, 0.2)',
             borderColor: 'rgba(142, 218, 101, 0)',
             data: minCorrects,
@@ -82,6 +87,7 @@ export const getChartData = (
         {
             pointRadius: 0,
             showLine: true,
+            label: 'maxCorrects',
             borderColor: 'rgba(142, 218, 101, 0)',
             data: maxCorrects,
             fill: false,
@@ -162,14 +168,6 @@ export const getChartOptions = (threshold, savedThreshold, handleOnDrag) => ({
     legend: {
         display: false,
     },
-    // layout: {
-    //     padding: {
-    //         left: 20,
-    //         right: 20,
-    //         top: 5,
-    //         bottom: 5,
-    //     },
-    // },
     scales: {
         xAxes: [{
             display: true,

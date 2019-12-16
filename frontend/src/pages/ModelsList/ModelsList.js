@@ -23,7 +23,7 @@ class ModelsList extends Component {
         })
             .then(results => results.json())
             .then(data => {
-                this.setState({ models: data, totalPages: 30 })
+                this.setState({ models: data.models, totalPages: data.numPages })
             })
             .catch(err => console.log(err));
     }
@@ -41,7 +41,7 @@ class ModelsList extends Component {
             })
                 .then(results => results.json())
                 .then(data => {
-                    this.setState({ models: data, loading: false })
+                    this.setState({ models: data.models, loading: false })
                 })
                 .catch(err => console.log(err));
         } else if (state.filtered.length > 0) {
@@ -60,8 +60,11 @@ class ModelsList extends Component {
                 })
                     .then(results => results.json())
                     .then(data => {
-                        console.log('data', data);
-                        this.setState({ models: data, loading: false })
+                        this.setState({
+                            models: data.models,
+                            totalPages: data.numPages,
+                            loading: false
+                        })
                     })
                     .catch(err => console.log(err));
             }, 500);
@@ -109,7 +112,7 @@ class ModelsList extends Component {
                         data={models}
                         columns={columns}
                         className="highlight"
-                        defaultPageSize={15}
+                        defaultPageSize={100}
                         pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
                         pages={this.state.totalPages}
                         loading={this.state.loading}
