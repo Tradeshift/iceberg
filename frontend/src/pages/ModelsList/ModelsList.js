@@ -11,14 +11,13 @@ class ModelsList extends Component {
         this.state = {
             models: [],
             loading: false,
-            page: 0,
             totalPages: 1
         };
         this.timeout = null;
     }
 
     componentDidMount() {
-        fetch(`/iceberg/multi/?page=${this.state.page}`, {
+        fetch(`/iceberg/multi/?page=0`, {
             accept: 'application/json',
         })
             .then(results => results.json())
@@ -30,11 +29,10 @@ class ModelsList extends Component {
 
     fetchData(state) {
         this.setState({ loading: true });
+
         const baseUrl = `/iceberg/multi/?page=${state.page}`;
 
         if(state.filtered.length === 0) {
-            this.setState({ page: state.page });
-
             // fetch data for that page
             fetch(baseUrl, {
                 accept: 'application/json',
@@ -45,7 +43,6 @@ class ModelsList extends Component {
                 })
                 .catch(err => console.log(err));
         } else if (state.filtered.length > 0) {
-            this.setState({ page: 0 });
             let searchUrl = baseUrl;
 
             state.filtered.forEach(filter => {
