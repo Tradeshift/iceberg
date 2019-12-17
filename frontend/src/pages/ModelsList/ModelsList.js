@@ -109,8 +109,8 @@ class ModelsList extends Component {
                         data={models}
                         columns={columns}
                         className="highlight"
-                        defaultPageSize={100}
-                        pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
+                        defaultPageSize={5} // the table will have a minimum of 5 rows - if a page has more than 5 rows it will show all of them; if it's less, it will fill up with empty rows
+                        showPageSizeOptions={false}
                         pages={this.state.totalPages}
                         loading={this.state.loading}
                         filterable
