@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import debounce from 'lodash/debounce';
 import ReactTable from 'react-table-v6';
 import TopBar from 'components/TopBar/TopBar';
 import ModelsListStyles from './ModelsListStyles';
@@ -11,61 +12,60 @@ class ModelsList extends Component {
         this.state = {
             models: [],
             loading: false,
-            totalPages: 1
+            totalPages: 1,
+            usernameSearchTerm: null,
+            idSearchTerm: null,
+            filtered: undefined
         };
         this.timeout = null;
     }
 
-    componentDidMount() {
-        fetch(`/iceberg/multi/?page=0`, {
+    fetchData(url) {
+        fetch(url, {
             accept: 'application/json',
         })
             .then(results => results.json())
             .then(data => {
-                this.setState({ models: data.models, totalPages: data.numPages })
+                this.setState({
+                    models: data.models,
+                    totalPages: data.numPages,
+                    loading: false
+                })
             })
             .catch(err => console.log(err));
     }
 
-    fetchData(state) {
-        this.setState({ loading: true });
+    componentDidMount() {        
+        this.fetchData('/iceberg/multi/?page=0');
+    }
 
+    updateData(state) {
+        this.setState({ loading: true });
         const baseUrl = `/iceberg/multi/?page=${state.page}`;
 
-        if(state.filtered.length === 0) {
-            // fetch data for that page
-            fetch(baseUrl, {
-                accept: 'application/json',
-            })
-                .then(results => results.json())
-                .then(data => {
-                    this.setState({ models: data.models, loading: false })
-                })
-                .catch(err => console.log(err));
-        } else if (state.filtered.length > 0) {
-            let searchUrl = baseUrl;
+        function getResults() {
+            if(state.filtered.length === 0) {
+                // fetch data for that page
+                this.fetchData(baseUrl);
+            } else if (state.filtered.length > 0) {
+                let searchUrl = baseUrl;
 
-            state.filtered.forEach(filter => {
-                searchUrl += `&${filter.id}=${filter.value}`;
-            });
+                state.filtered.forEach(filter => {
+                    searchUrl += `&${filter.id}=${filter.value}`;
+                });
 
-            if(this.timeout) {clearTimeout(this.timeout)}
-            this.timeout = setTimeout(() => {
                 // perform search
-                fetch(searchUrl, {
-                    accept: 'application/json',
-                })
-                    .then(results => results.json())
-                    .then(data => {
-                        this.setState({
-                            models: data.models,
-                            totalPages: data.numPages,
-                            loading: false
-                        })
-                    })
-                    .catch(err => console.log(err));
-            }, 500);
+                this.fetchData(searchUrl);
+            }
         }
+
+        if(this.timeout) {this.timeout.cancel()}
+        
+        // the function returned by debounce will only be invoked once, after it stops being called for 400ms
+        // this is to prevent sending too many requests when the users type into the search box
+        this.timeout = debounce(getResults, 400);
+
+        this.timeout();
     }
 
     render() {
@@ -115,7 +115,7 @@ class ModelsList extends Component {
                         loading={this.state.loading}
                         filterable
                         manual // informs React Table that you'll be handling sorting and pagination server-side
-                        onFetchData={(state) => this.fetchData(state)}
+                        onFetchData={(state) => this.updateData(state)}
                     />
                 </ModelsListStyles>
             </>
