@@ -3,6 +3,7 @@ package com.tradeshift.iceberg.app.multi
 import com.tradeshift.iceberg.app.multi.dto.MultiDatum
 import com.tradeshift.iceberg.app.multi.dto.MultiModel
 import com.tradeshift.iceberg.app.multi.dto.MultiStatsResponse
+import com.tradeshift.iceberg.app.multi.dto.PagedModels
 import io.dropwizard.jersey.jsr310.LocalDateParam
 import java.util.*
 import javax.validation.constraints.NotNull
@@ -57,7 +58,7 @@ class MultiResource(
         @QueryParam("page") page: Int,
         @QueryParam("username") username: String?,
         @QueryParam("id") id: String?
-    ): List<MultiModel> {
+    ): PagedModels {
         return service.getModels(page, username, id)
     }
 
@@ -66,7 +67,7 @@ class MultiResource(
     fun getAllModelsForUser(
         @NotNull @PathParam("username") username: String,
         @QueryParam("page") page: Int
-    ): List<MultiModel> {
+    ): PagedModels {
         return service.getModelsForUser(username, page)
     }
 
