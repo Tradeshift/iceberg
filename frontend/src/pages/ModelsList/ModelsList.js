@@ -18,22 +18,34 @@ class ModelsList extends Component {
             filtered: undefined
         };
         this.timeout = null;
+        this.abortController = new AbortController();
     }
 
-    fetchData(url) {
-        fetch(url, {
-            accept: 'application/json',
-        })
-            .then(results => results.json())
-            .then(data => {
-                this.setState({
-                    models: data.models,
-                    totalPages: data.numPages,
-                    loading: false
-                })
-            })
-            .catch(err => console.log(err));
-    }
+    async fetchData (url) {
+        this.abortController.abort(); // Cancel the previous request
+        this.abortController = new AbortController();
+
+        try {
+            let response = await fetch(url, {
+                accept: 'application/json',
+                signal: this.abortController.signal
+            });
+            let data = await response.json();
+
+            this.setState({
+                models: data.models,
+                totalPages: data.numPages,
+                loading: false
+            });
+        }
+        catch (err) {
+            if (err.name === 'AbortError') {
+                return; // Continuation logic has already been skipped, so return normally
+            }
+
+            console.error('Error fetching data', err);
+        }
+    };
 
     componentDidMount() {        
         this.fetchData('/iceberg/multi/?page=0');
@@ -60,7 +72,7 @@ class ModelsList extends Component {
         }
 
         if(this.timeout) {this.timeout.cancel()}
-        
+
         // the function returned by debounce will only be invoked once, after it stops being called for 400ms
         // this is to prevent sending too many requests when the users type into the search box
         this.timeout = debounce(getResults, 400);
