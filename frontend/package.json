@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "abortcontroller-polyfill": "^1.4.0",
-    "chart.js": "2.6.0",
+    "chart.js": "2.9.4",
     "chartjs-plugin-annotation": "^0.5.7",
     "chartjs-plugin-draggable": "^0.1.6",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
